@@ -1,1 +1,0 @@
-/usr/bin/cc   -rdynamic CMakeFiles/exec.dir/src/init_all.c.o CMakeFiles/exec.dir/src/communicationSTM.c.o CMakeFiles/exec.dir/src/listen.c.o  -o bin/exec -lpthread 

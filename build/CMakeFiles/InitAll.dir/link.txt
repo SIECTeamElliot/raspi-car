@@ -1,1 +1,0 @@
-/usr/bin/cc   -rdynamic CMakeFiles/InitAll.dir/src/init_all.c.o CMakeFiles/InitAll.dir/src/communicationSTM.c.o CMakeFiles/InitAll.dir/src/listen.c.o  -o build/bin/InitAll 
