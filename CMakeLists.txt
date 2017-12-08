@@ -7,5 +7,5 @@ include_directories(${PROJECT_SRC_DIR}/include)
 file(GLOB SOURCES src/*.cpp src/*.c)
 
 
-add_executable(exec src/init_all.c ${SOURCES})
+add_executable(exec src/main.cpp ${SOURCES})
 target_link_libraries(exec pthread)

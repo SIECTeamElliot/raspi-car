@@ -58,7 +58,7 @@ void init_socket(int *s){
 
 
 int
-main(void)
+main_(void)
 {
   pthread_t test;
 
