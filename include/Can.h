@@ -13,29 +13,36 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 
+#include <thread>
 
+#define DEBUG true
 class Can 
 {
 private: 
 	const char * ifname = "can0";
-	int * socket; 
-	bool enable; 
+	int * canSckt; 
+	bool enable;
 
-	static const int nbFilters = 0; 
-	static const char idFilters[nbFilters]; // = { IDMSG1, IDMSG2 }
+	std::thread * listenThread; 
+	bool listening; 
+
+	static constexpr int nbFilters = 1; 
+	unsigned char idFilters[nbFilters]; // = { IDMSG1, IDMSG2 }
 
 	int initFilters(); 
 	int initSocket();
 
-	void (*listenCallback)(int nbBytes, int * data); 
+	void (*listenCallback)(int nbBytes, unsigned char * bytes); 
 	void listenTask(); 
 
 public: 	
 	Can(); 
 	virtual ~Can(); 
 	
-	int startListening(void (*callback)(int nbBytes, int * data));
+	int startListening(void (*callback)(int nbBytes, unsigned char * bytes) = nullptr);
 	int stopListening(); 
+
+	int sendFrame(struct can_frame *frame, char data); 
 };
 
 

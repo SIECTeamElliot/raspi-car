@@ -1,8 +1,8 @@
 #include "../include/Can.h"
 
-
 int main() 
 {
-	Can obj(); 
+	Can obj; 
+	obj.startListening();
 	return 0; 
 }
