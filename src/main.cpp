@@ -1,3 +1,5 @@
+#define DEBUG true
+
 #include "../include/Can.h"
 
 int main() 

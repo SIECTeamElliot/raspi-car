@@ -1,20 +1,31 @@
 #include "../include/Can.h"
 
+// Init CAN filters with the ID defined in idFilters
 int Can::initFilters() 
 { 
 	// defining filters for CAN :
 	struct can_filter rfilter[nbFilters];
 
+#ifdef DEBUG 
+		std::cout << "CAN ID Filter init. to : "; 
+#endif 
+
 	for(int i = 0; i < nbFilters; i++)
 	{
 		rfilter[i].can_mask = CAN_SFF_MASK;
 		rfilter[i].can_id = idFilters[i];
+
+#ifdef DEBUG
+		std::cout << idFilters[i] << "-"; 
 	}
+#else 
+	}
+#endif
 
 	return setsockopt((*this->canSckt), SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, sizeof(rfilter));
-
 }	
 
+// Init CAN socket and store it in canSckt
 int Can::initSocket()
 {
 	int nbytes;
@@ -23,11 +34,11 @@ int Can::initSocket()
 	struct ifreq ifr;
 
 	// opening socket CAN_RAW//SOCK_RAW or CAN_BCM // SOCK_DGRAM BCM = cyclique
-	printf("[init_all] starting socket\n");
+	std::cout << "[CAN] Starting socket." << std::endl;
 
 	if(	( *(this->canSckt) = socket(PF_CAN, SOCK_RAW, CAN_RAW) ) < 0) {
-		perror("Error while opening socket");
-		//	return -1;
+		std::cerr << "Error while opening socket" << std::endl;
+		return -1;
 	} else { 
 		this->enable = true;
 	}
@@ -39,37 +50,54 @@ int Can::initSocket()
 	addr.can_family  = AF_CAN;
 	addr.can_ifindex = ifr.ifr_ifindex;
 
-	printf("%s at index %d\n", ifname, ifr.ifr_ifindex);
+	std::cout << "[CAN] Get interface name : " << ifname << "." << std::endl;
 
 	// bind the socket to a can interface
 	if(bind((*this->canSckt), (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-		perror("Error in socket bind");
-		//return -2;
+		std::cerr << "Error in socket bind" << std::endl;
+		return -2;
 	}
 }
 
-Can::Can() : enable(false), canSckt(new int)
+// Construct a CAN object - must be call once 
+Can::Can() : 
+		enable(false), 
+		canSckt(new int)
 {
 	initSocket(); 
 	initFilters();
 }
 
+Can::Can(int nbFilters, unsigned char * idFilters) : 
+		enable(false), 
+		canSckt(new int), 
+		nbFilters(nbFilters),
+		idFilters(new unsigned char[nbFilters])
+{
+	initSocket(); 
+	initFilters();
+}
+
+// Close the can socket and stop the listening
 Can::~Can() 
 {
 	if( listening ) 
 	{
 		delete listenThread; 
+		listening = false; 
 	}
 	close(*this->canSckt); 
 }
 
 
-#define TH_NAME "listen"
+// Listening task, launched in a thread
 void Can::listenTask()
 {
-	printf("%s Starting thread\n",TH_NAME);
+#ifdef DEBUG
+	std::cout << "Starting the listening thread" << std::endl;
+#endif 
+
     struct can_frame canFrame;
-    printf("%s Socket number : %d\n",TH_NAME,(*this->canSckt));
     int nbytes;
   
 
@@ -79,18 +107,24 @@ void Can::listenTask()
 
     // Checking that there are no errors raised by read
     if (nbytes < 0){
-      perror ("[Listen] can raw socket read \n");
+      std::cerr << "[Listen] can raw socket read \n" << std::endl; 
     }
 
     // Checking that the frame received is complete 
     if (nbytes < sizeof(struct can_frame)){
-      perror("[Listen] read: incomplete CAN frame");
+      std::cerr << "[Listen] read: incomplete CAN frame" << std::endl;
     }
 
     // affichage du paquet reçu
-    if(DEBUG){
-      printf("%s Received var number %d = %d \n",TH_NAME,canFrame.can_id,canFrame.data[0]);
-    }
+#ifdef DEBUG
+		std::cout << "[Received]: [" << canFrame.can_id << "] -> "; 
+		for(int i = 0; i < nbytes; i++) 
+		{ 
+      		std::cout << canFrame.data[i] << "-"; 
+      	}
+      	std::cout << std::endl;
+#endif
+
     // TODO rajouter une sécurité sur la data
     if (sizeof(canFrame.data[0])>0){
       listenCallback(nbytes, canFrame.data);
@@ -99,12 +133,36 @@ void Can::listenTask()
   }
 }
 
-int Can::sendFrame(struct can_frame *frame, char data)
+// Sporadic CAN function to send message
+int Can::sendFrame(struct can_frame *frame, int nbBytes, unsigned char * bytes) 
 {
-	(*frame).data[0]=data;
+	if (nbBytes > CAN_MAX_DLEN) 
+	{
+		std::cerr << "[sendFrame]: Expected a CAN frame data length nbBytes < " << CAN_MAX_DLEN << std::endl; 
+		return -1;
+	} 
+
+
+#ifdef DEBUG
+	std::cout << "[Sent]: [" << frame->can_id << "] -> "; 
+#endif 
+	(*frame).can_dlc = nbBytes;
+
+	for(int i = 0; i < nbBytes; i++) 
+	{
+		(*frame).data[0] = bytes[0];
+#ifdef DEBUG
+		std::cout << bytes[i] << std::endl; 
+	}
+	std::cout << std::endl;
+#else 
+	}	
+#endif
+
 	return write(*this->canSckt, frame, sizeof(struct can_frame));
 }
 
+// Starts the listening thread
 int Can::startListening(void (*callback)(int nbBytes, unsigned char * data))
 {
 	if( !listening && enable ) 
@@ -114,6 +172,7 @@ int Can::startListening(void (*callback)(int nbBytes, unsigned char * data))
 	}
 }
 
+// Stops the listening thread
 int Can::stopListening()
 {
 	if( listening && enable ) 

@@ -14,8 +14,10 @@
 #include <linux/can/raw.h>
 
 #include <thread>
+#include <iostream> 
 
 #define DEBUG true
+
 class Can 
 {
 private: 
@@ -26,8 +28,8 @@ private:
 	std::thread * listenThread; 
 	bool listening; 
 
-	static constexpr int nbFilters = 1; 
-	unsigned char idFilters[nbFilters]; // = { IDMSG1, IDMSG2 }
+	int nbFilters = 1; 
+	unsigned char * idFilters; // = { IDMSG1, IDMSG2 }
 
 	int initFilters(); 
 	int initSocket();
@@ -37,12 +39,13 @@ private:
 
 public: 	
 	Can(); 
+	Can(int nbFilters, unsigned char * idFilters); 
 	virtual ~Can(); 
 	
 	int startListening(void (*callback)(int nbBytes, unsigned char * bytes) = nullptr);
 	int stopListening(); 
 
-	int sendFrame(struct can_frame *frame, char data); 
+	int sendFrame(struct can_frame *frame, int nbBytes, unsigned char * bytes); 
 };
 
 
