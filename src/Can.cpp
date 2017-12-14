@@ -1,28 +1,68 @@
 #include "../include/Can.h"
 
+
+// Construct a CAN object - must be call once 
+Can::Can() : 
+		enable(false), 
+		canSckt(new int)
+{
+	initSocket(); 
+	initFilters();
+}
+
+Can::Can(int nbFilters, unsigned char * idFilters) : 
+		enable(false), 
+		canSckt(new int), 
+		nbFilters(nbFilters),
+		idFilters(new unsigned char[nbFilters])
+{
+	initSocket(); 
+	initFilters();
+}
+
+// Close the can socket and stop the listening
+Can::~Can() 
+{
+	if( listening ) 
+	{
+		delete listenThread; 
+		listening = false; 
+	}
+	close(*this->canSckt); 
+}
+
+
 // Init CAN filters with the ID defined in idFilters
 int Can::initFilters() 
 { 
-	// defining filters for CAN :
-	struct can_filter rfilter[nbFilters];
+	if(nbFilters > 0) 
+	{
+
+		// defining filters for CAN :
+		struct can_filter rfilter[nbFilters];
 
 #ifdef DEBUG 
-		std::cout << "CAN ID Filter init. to : "; 
+			std::cout << "CAN ID Filter init. to : "; 
 #endif 
 
-	for(int i = 0; i < nbFilters; i++)
-	{
-		rfilter[i].can_mask = CAN_SFF_MASK;
-		rfilter[i].can_id = idFilters[i];
+		for(int i = 0; i < nbFilters; i++)
+		{
+			rfilter[i].can_mask = CAN_SFF_MASK;
+			rfilter[i].can_id = idFilters[i];
 
 #ifdef DEBUG
-		std::cout << idFilters[i] << "-"; 
-	}
+			std::cout << idFilters[i] << "-"; 
+		}
 #else 
-	}
+		}
 #endif
 
-	return setsockopt((*this->canSckt), SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, sizeof(rfilter));
+		return setsockopt((*this->canSckt), SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, sizeof(rfilter));
+	}
+	else
+	{
+		return 0; 
+	}
 }	
 
 // Init CAN socket and store it in canSckt
@@ -57,36 +97,6 @@ int Can::initSocket()
 		std::cerr << "Error in socket bind" << std::endl;
 		return -2;
 	}
-}
-
-// Construct a CAN object - must be call once 
-Can::Can() : 
-		enable(false), 
-		canSckt(new int)
-{
-	initSocket(); 
-	initFilters();
-}
-
-Can::Can(int nbFilters, unsigned char * idFilters) : 
-		enable(false), 
-		canSckt(new int), 
-		nbFilters(nbFilters),
-		idFilters(new unsigned char[nbFilters])
-{
-	initSocket(); 
-	initFilters();
-}
-
-// Close the can socket and stop the listening
-Can::~Can() 
-{
-	if( listening ) 
-	{
-		delete listenThread; 
-		listening = false; 
-	}
-	close(*this->canSckt); 
 }
 
 

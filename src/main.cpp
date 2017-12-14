@@ -1,10 +1,11 @@
 #define DEBUG true
 
 #include "../include/Can.h"
+#include "../include/communicationSTM.h"
 
 int main() 
 {
-	Can obj; 
-	obj.startListening();
+	Can iface; 
+	Tests(iface);
 	return 0; 
 }

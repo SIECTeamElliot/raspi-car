@@ -28,7 +28,7 @@ private:
 	std::thread * listenThread; 
 	bool listening; 
 
-	int nbFilters = 1; 
+	int nbFilters = 0; 
 	unsigned char * idFilters; // = { IDMSG1, IDMSG2 }
 
 	int initFilters(); 

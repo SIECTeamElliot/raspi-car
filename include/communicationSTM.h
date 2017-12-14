@@ -22,7 +22,7 @@
 
 //#include <wiringPi.h>
 
-#include "can_var.h"
+#include "Can.h"
 
 /*********************** InitMessage **********************
  * Initialisation d'un message à envoyer
@@ -46,7 +46,7 @@ void Init ();
  * OUTPUT : nbytes : retour de la fonction write
  *********************************************************/
 
-int EnvoiMessage (struct can_frame *frame, char data, int socket);
+int EnvoiMessage (struct can_frame *frame, char data, Can& can);
 
 /*********************** CreerFiltre **********************
 Crée un filtre pour autoriser un message en réception
@@ -60,6 +60,6 @@ void CreerFiltre (int id, int indice, struct can_filter *tabFiltre);
 Teste les envois de messages
 INPUTS : socket : 
  ****************************************************************/
-void Tests (int *s);
+void Tests (Can& can);
   
 #endif
