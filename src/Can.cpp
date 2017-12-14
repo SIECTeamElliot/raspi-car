@@ -55,7 +55,7 @@ int Can::initFilters()
 			rfilter[i].can_id = 0x100;
 
 #ifdef DEBUG
-			std::cout << rfilter[i].can_id << "-"; 
+			std::cout << rfilter[i].can_id << " "; 
 		}
 #else 
 		}
@@ -134,7 +134,7 @@ void Can::listenTask()
 		std::cout << "[Received]: [" << canFrame.can_id << "] -> "; 
 		for(int i = 0; i < nbytes; i++) 
 		{ 
-      		std::cout << canFrame.data[i] << "-"; 
+      		std::cout << std::fixed << canFrame.data[i] << " "; 
       	}
       	std::cout << std::endl;
 #endif
@@ -166,7 +166,7 @@ int Can::sendFrame(struct can_frame *frame, int nbBytes, unsigned char * bytes)
 	{
 		(*frame).data[0] = bytes[0];
 #ifdef DEBUG
-		std::cout << bytes[i] << std::endl; 
+		std::cout << std::fixed << bytes[i] << std::endl; 
 	}
 	std::cout << std::endl;
 #else 
