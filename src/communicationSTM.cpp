@@ -11,9 +11,9 @@ void InitMessage (struct can_frame *frame, int id, int taille)
 }
 
 
-#define ANGLEVOLANTCMD 33
-#define VITESSECMDGAUCHE 33
-#define VITESSECMDDROITE 33
+#define ANGLEVOLANTCMD 0x21
+#define VITESSECMDGAUCHE 0x01
+#define VITESSECMDDROITE 0x02
 
 /*********************** Init ******************************
  * Initialisation globale des communications
