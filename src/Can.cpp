@@ -148,7 +148,7 @@ void Can::listenTask()
 }
 
 // Sporadic CAN function to send message
-int Can::sendFrame(struct can_frame *frame, int nbBytes, unsigned char * bytes) 
+int Can::sendFrame(struct can_frame *frame, int nbBytes, char * bytes) 
 {
 	if (nbBytes > CAN_MAX_DLEN) 
 	{
