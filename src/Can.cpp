@@ -52,7 +52,7 @@ int Can::initFilters()
 		{
 			rfilter[i].can_mask = CAN_SFF_MASK;
 			// rfilter[i].can_id = idFilters[i];
-			rfilter[i].can_id = 0x100;
+			rfilter[i].can_id = 33;
 
 #ifdef DEBUG
 			std::cout << rfilter[i].can_id << "-"; 
