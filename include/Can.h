@@ -30,7 +30,7 @@ private:
 	bool listening; 
 
 	int nbFilters = 1; 
-	unsigned char * idFilters;
+	unsigned int * idFilters;
 
 	int initFilters(); 
 	int initSocket();
@@ -40,7 +40,7 @@ private:
 
 public: 	
 	Can(); 
-	Can(int nbFilters, unsigned char * idFilters); 
+	Can(int nbFilters, unsigned int * idFilters); 
 	virtual ~Can(); 
 	
 	int startListening(void (*callback)(int nbBytes, unsigned char * bytes) = nullptr);

@@ -6,17 +6,17 @@ Can::Can() :
 		enable(false), 
 		canSckt(new int)
 {
-	idFilters = new unsigned char[1]; 
-	idFilters[0] = (unsigned char) 0x100;
+	idFilters = new unsigned int[1]; 
+	idFilters[0] = (unsigned int) 0x100;
 	initSocket(); 
 	initFilters();
 }
 
-Can::Can(int nbFilters, unsigned char * idFilters) : 
+Can::Can(int nbFilters, unsigned int * idFilters) : 
 		enable(false), 
 		canSckt(new int), 
 		nbFilters(nbFilters),
-		idFilters(new unsigned char[nbFilters])
+		idFilters(new unsigned int[nbFilters])
 {
 	//cpy
 	initSocket(); 
@@ -55,7 +55,7 @@ int Can::initFilters()
 			rfilter[i].can_id = 0x100;
 
 #ifdef DEBUG
-			std::cout << idFilters[i] << "-"; 
+			std::cout << rfilter[i].can_id << "-"; 
 		}
 #else 
 		}

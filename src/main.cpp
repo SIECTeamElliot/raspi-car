@@ -18,6 +18,7 @@ int main()
 	Can iface; 
 	iface.startListening(&print);
 	// Tests(iface);
+	while(1);
 
 	return 0; 
 }
