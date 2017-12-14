@@ -46,7 +46,7 @@ public:
 	int startListening(void (*callback)(int nbBytes, unsigned char * bytes) = nullptr);
 	int stopListening(); 
 
-	int sendFrame(struct can_frame *frame, int nbBytes, unsigned char * bytes); 
+	int sendFrame(struct can_frame *frame, int nbBytes, char * bytes); 
 };
 
 
