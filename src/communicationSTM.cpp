@@ -46,8 +46,7 @@ void Init ()
 
 int EnvoiMessage (struct can_frame *frame, char data, Can& can)
 {
-  Can d; 
-  d.sendFrame(frame, 1, (unsigned char *) &data );
+  can.sendFrame(frame, 1, (unsigned char *) &data );
   return 0;
 }
 
