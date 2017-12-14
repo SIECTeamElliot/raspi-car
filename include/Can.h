@@ -35,7 +35,7 @@ private:
 	int initFilters(); 
 	int initSocket();
 
-	void (*listenCallback)(int nbBytes, unsigned char * bytes); 
+	void (*listenCallback)(int nbBytes, unsigned char * bytes) = nullptr; 
 	void listenTask(); 
 
 public: 	

@@ -140,7 +140,7 @@ void Can::listenTask()
 #endif
 
     // TODO rajouter une sécurité sur la data
-    if (sizeof(canFrame.data[0])>0){
+    if (sizeof(canFrame.data[0])>0 && listenCallback != nullptr) {
       listenCallback(nbytes, canFrame.data);
     }
 
@@ -159,7 +159,7 @@ int Can::sendFrame(struct can_frame *frame, int nbBytes, unsigned char * bytes)
 
 #ifdef DEBUG
 	std::cout << "[Sent]: [" << frame->can_id << "] -> "; 
-#endif 
+#endif 	
 	(*frame).can_dlc = nbBytes;
 
 	for(int i = 0; i < nbBytes; i++) 
