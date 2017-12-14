@@ -18,6 +18,7 @@
 
 #define DEBUG true
 
+
 class Can 
 {
 private: 
@@ -28,8 +29,8 @@ private:
 	std::thread * listenThread; 
 	bool listening; 
 
-	int nbFilters = 0; 
-	unsigned char * idFilters; // = { IDMSG1, IDMSG2 }
+	int nbFilters = 1; 
+	unsigned char * idFilters;
 
 	int initFilters(); 
 	int initSocket();
