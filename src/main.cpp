@@ -17,8 +17,8 @@ int main()
 {
 	Can iface; 
 	iface.startListening();
-	Tests(iface);
-	while(1);	
-
+	while(1){
+		Tests(iface);
+	};
 	return 0; 
 }
