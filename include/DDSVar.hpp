@@ -7,7 +7,7 @@
 
 class DDSCan; 
 
-template <class T = uint8_t> 
+template <class T = int32_t> 
 class DDSVar 
 {
 private: 

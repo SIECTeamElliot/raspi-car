@@ -46,8 +46,8 @@ void Init ()
 
 int EnvoiMessage (struct can_frame *frame, char data, Can& can)
 {
-  char dat[1] = {data}; 
-  can.sendFrame(frame, 1, dat);
+  char dat[5] = {data, 5,3,4,6}; 
+  can.sendFrame(frame, 5, dat);
   return 0;
 }
 
@@ -88,6 +88,10 @@ void Tests (Can& can)
   sleep(2);
 
   nbytes=EnvoiMessage ( &AngleVolantCommande, (char)0, can);
+  printf("[Test] envoi angle volant: redresser %d\n",nbytes);
+  sleep(1);
+
+  nbytes=EnvoiMessage ( &AngleVolantCommande, (char) 5, can);
   printf("[Test] envoi angle volant: redresser %d\n",nbytes);
   sleep(1);
 

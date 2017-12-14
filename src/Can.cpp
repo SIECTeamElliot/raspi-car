@@ -32,6 +32,8 @@ Can::~Can()
 		listening = false; 
 	}
 	close(*this->canSckt); 
+	delete canSckt; 
+	delete idFilters; 
 }
 
 
@@ -55,7 +57,7 @@ int Can::initFilters()
 			rfilter[i].can_id = 0x100;
 
 #ifdef DEBUG
-			std::cout << rfilter[i].can_id << " "; 
+			std::cout << rfilter[i].can_id << " " << std::endl; 
 		}
 #else 
 		}
@@ -131,17 +133,12 @@ void Can::listenTask()
 
     // affichage du paquet reçu
 #ifdef DEBUG
-		std::cout << "[Received]: [" << canFrame.can_id << "] -> "; 
-		for(int i = 0; i < nbytes; i++) 
-		{ 
-      		std::cout << std::fixed << canFrame.data[i] << " "; 
-      	}
-      	std::cout << std::endl;
+    printFrame(Can::Reception, &canFrame); 
 #endif
 
     // TODO rajouter une sécurité sur la data
     if (sizeof(canFrame.data[0])>0 && listenCallback != nullptr) {
-      listenCallback(nbytes, canFrame.data);
+      listenCallback(nbytes, (char*) canFrame.data);
     }
 
   }
@@ -157,27 +154,22 @@ int Can::sendFrame(struct can_frame *frame, int nbBytes, char * bytes)
 	} 
 
 
-#ifdef DEBUG
-	std::cout << "[Sent]: [" << frame->can_id << "] -> "; 
-#endif 	
 	(*frame).can_dlc = nbBytes;
 
 	for(int i = 0; i < nbBytes; i++) 
 	{
 		(*frame).data[0] = bytes[0];
-#ifdef DEBUG
-		std::cout << std::fixed << bytes[i] << std::endl; 
-	}
-	std::cout << std::endl;
-#else 
 	}	
+
+#ifdef DEBUG
+	printFrame(Can::Emission, frame); 
 #endif
 
 	return write(*this->canSckt, frame, sizeof(struct can_frame));
 }
 
 // Starts the listening thread
-int Can::startListening(void (*callback)(int nbBytes, unsigned char * data))
+int Can::startListening(void (*callback)(int nbBytes, char * data))
 {
 	if( !listening && enable ) 
 	{
@@ -194,4 +186,52 @@ int Can::stopListening()
 		delete listenThread;
 		listening = false;
 	}
+}
+
+
+inline void printFrame(Can::FrameDir_t dir, struct can_frame *frame)
+{
+	std::cout << std::left;
+	std::cout.width(7); 
+
+	switch(dir)
+	{
+		case Can::None: 
+			std::cout << "[---]";  
+			break; 
+
+		case Can::Emission:
+			std::cout << "[->>]";
+			break; 
+
+		case Can::Reception: 
+			std::cout << "[<<-]";
+			break; 
+	}
+
+	std::cout << "id@"; 
+
+	std::cout.width(3);
+	std::cout << std::right; 
+	std::cout << +frame->can_id; 
+
+	std::cout << " | ";
+
+	std::cout << "lg#"; 
+	std::cout.width(3);
+	std::cout << std::right; 
+	std::cout << +frame->can_dlc; 
+
+	std::cout << " | ";
+	std::cout << "data: ";
+
+	// std::cout.width(40);
+
+	for(int i = 0; i < frame->can_dlc; i++) 
+	{
+		std::cout.width(4);
+		std::cout << std::right; 
+		std::cout << +frame->data[i];
+	}
+	std::cout << std::endl;
 }
