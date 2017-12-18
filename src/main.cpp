@@ -1,6 +1,7 @@
 #define DEBUG true
 
-#include "../include/Can.h"
+#include "../include/Can.h" 
+#include "../include/DDSCan.h"
 #include "../include/communicationSTM.h"
 #include <iostream>
 

@@ -144,6 +144,35 @@ void Can::listenTask()
   }
 }
 
+int Can::sendFrame(struct can_frame * frame) 
+{
+	#ifdef DEBUG
+		printFrame(Can::Emission, frame); 
+	#endif
+
+	return write(*this->canSckt, frame, sizeof(struct can_frame));
+}
+
+// template <uint32_t ID, uint32_t DLC, class T = int32_t > 
+// typename std::enable_if<DLC <= CAN_MAX_DLEN, int>::type 
+// Can::sendFrame(const T * val)
+// {
+// 	struct can_frame frame; 
+// 	frame.can_id = ID; 
+// 	frame.can_dlc = DLC; 
+	
+// 	for(int i = 0; i < frame.can_dlc; i++) 
+// 	{
+// 		frame.data[i] = val[i];
+// 	}	
+
+// 	#ifdef DEBUG
+// 		printFrame(Can::Emission, frame); 
+// 	#endif
+
+// 	return write(*this->canSckt, &frame, sizeof(struct can_frame));
+// }
+
 // Sporadic CAN function to send message
 int Can::sendFrame(struct can_frame *frame, int nbBytes, char * bytes) 
 {
@@ -153,12 +182,11 @@ int Can::sendFrame(struct can_frame *frame, int nbBytes, char * bytes)
 		return -1;
 	} 
 
-
 	(*frame).can_dlc = nbBytes;
 
 	for(int i = 0; i < nbBytes; i++) 
 	{
-		(*frame).data[0] = bytes[0];
+		(*frame).data[i] = bytes[i];
 	}	
 
 #ifdef DEBUG

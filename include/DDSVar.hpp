@@ -4,10 +4,13 @@
 #include <mutex>
 #include <thread>
 #include <memory>
+#include <type_traits>
 
 class DDSCan; 
 
-template <class T = int32_t> 
+enum VarDir_t { RO = 0, RW = 1 };
+
+template <VarDir_t DIR = RW, class T = int32_t> 
 class DDSVar 
 {
 private: 
@@ -15,15 +18,16 @@ private:
 	std::mutex mx; 
 	friend class DDSCan; 
 
-	void (*onWrite)(const T&) = nullptr;
+	void (*onWrite)(const T&);
 
 public: 
-	DDSVar(void (*onwrite)(const T&)) : 
+
+	DDSVar(void (*onwrite)(const T&) = nullptr) :
 			value( new T ), 
 			onWrite(onWrite)
 	{}
 
-	inline T read(void) const
+	inline T read(void)
 	{
 		T val; 
 		mx.lock(); 
@@ -32,15 +36,21 @@ public:
 		return val;  
 	}
 
-	inline void write(const T& val)
+	template <VarDir_t D = DIR>
+	inline
+	typename std::enable_if<D == RW, void>::type
+	write(const T& val)
 	{
 		mx.lock(); 
-		onWrite(T);
 		value = val; 
+		onWrite(val);
 		mx.unlock();
 	}
 
-	inline T operator=(const T& val) 
+	template <VarDir_t D = DIR>
+	inline
+	typename std::enable_if<D == RW, T>::type	
+	operator=(const T& val) 
 	{
 		write(val); 
 		return read();

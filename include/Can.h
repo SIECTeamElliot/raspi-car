@@ -46,11 +46,11 @@ public:
 	int startListening(void (*callback)(int nbBytes, char * bytes) = nullptr);
 	int stopListening(); 
 
-	int sendFrame(struct can_frame *frame, int nbBytes, char * bytes); 
+	int sendFrame(struct can_frame * frame);
+	int sendFrame(struct can_frame * frame, int nbBytes, char * bytes); 
 
 	enum FrameDir_t { None = 0, Emission = 1, Reception = 2 };
 };
-
 
 inline void printFrame(Can::FrameDir_t dir, struct can_frame *frame);  
 
