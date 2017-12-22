@@ -11,32 +11,24 @@ namespace Config
 	{
 		namespace emission 
 		{
-			static const uint32_t steeringWheel = 0x001; 
-			static const uint32_t leftMotorSpeed = 0x003; 
-			static const uint32_t rightMotorSpeed = 0x003; 
-			static const uint32_t frontUS = 4; 
-			static const uint32_t rearUS = 5; 
-			static const uint32_t battery = 6; 
+			static const uint32_t motorSpeed = 0x003; 
+			static const uint32_t steeringPosFromLeft = 0x001; 
 		}
 
 		namespace reception
 		{
-			static const uint32_t steeringWheel = 0x999; 
-			static const uint32_t leftMotorSpeed = 0x998; 
-			static const uint32_t rightMotorSpeed = 0x30; 
-			static const uint32_t frontUS = 4; 
-			static const uint32_t rearUS = 5; 
-			static const uint32_t battery = 0x800; 
+			static const uint32_t motorSpeed = 0x030; 
+			static const uint32_t frontUS = 0x100; 
+			static const uint32_t rearUS = 0x110; 
+			static const uint32_t positionOther = 0x010; 
 		}
 		
 		static const uint32_t nbFilters = 6; 
 		static const uint32_t filters[nbFilters] = {
-			reception::steeringWheel, 
-			reception::leftMotorSpeed,
-			reception::rightMotorSpeed, 
-			reception::frontUS, 
+			reception::motorSpeed, 
+			reception::frontUS,
 			reception::rearUS, 
-			reception::battery
+			reception::positionOther
 		};	
 	}
 

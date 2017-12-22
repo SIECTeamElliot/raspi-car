@@ -21,13 +21,31 @@ public:
 	DDSCan(); 
 	virtual ~DDSCan(); 
 
-	DDSVar<RW> steeringWheel;
-	DDSVar<RW> leftMotorSpeed; 
-	DDSVar<RW> rightMotorSpeed; 
+	// Recep ID 0x30
+	DDSVar<RO> rightMotorSpeed;
+	DDSVar<RO> leftMotorSpeed; 
 
-	DDSVar<RO> frontUS[3]; 
-	DDSVar<RO> rearUS[3]; 
-	DDSVar<RO> battery; 
+	// Emiss ID 0x03
+	DDSVar<RW> motorSpeed;
+
+	struct US_struct 
+	{
+			DDSVar<RO> left; 
+			DDSVar<RO> center; 
+			DDSVar<RO> right; 
+	};
+
+	// ID 0x100
+	US_struct frontUS; 
+
+	// ID 0x110
+	US_struct rearUS; 
+
+	// ID 0x010
+	DDSVar<RO> wheelSensorLeft; 
+	DDSVar<RO> wheelSensorRight;
+	DDSVar<RW> steeringPosFromLeft; // Emiss ID 0x01
+ 	DDSVar<RO> battery; 
 }; 
 
 static DDSCan dds; 

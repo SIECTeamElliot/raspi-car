@@ -7,9 +7,8 @@
 Can DDSCan::canBus(Config::IDs::nbFilters, Config::IDs::filters); 
 
 DDSCan::DDSCan() : 
-	steeringWheel(&DDSCan::sendUpdate<Config::IDs::emission::steeringWheel>), 
-	leftMotorSpeed(&DDSCan::sendUpdate<Config::IDs::emission::leftMotorSpeed>), 
-	rightMotorSpeed(&DDSCan::sendUpdate<Config::IDs::emission::rightMotorSpeed>)
+	motorSpeed(&DDSCan::sendUpdate<Config::IDs::emission::motorSpeed>), 
+	steeringPosFromLeft(&DDSCan::sendUpdate<Config::IDs::emission::steeringPosFromLeft>)
 {
 #ifdef DEBUG
 	std::cout << "Init. DDSCan" << std::endl;
@@ -41,64 +40,55 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 	switch(id) 
 	{
 		case Config::IDs::reception::frontUS:
-			assert(nbBytes == 3); 
+			// assert(nbBytes == 6); 
 
-			for(int i = 0; i < 3; i++)
-			{
-				assert(bytes[i] < Config::thresholds::frontUS::max); 
-				assert(bytes[i] > Config::thresholds::frontUS::min);	
-			}
+			// for(int i = 0; i < 3; i++)
+			// {
+			// 	assert(bytes[i] < Config::thresholds::frontUS::max); 
+			// 	assert(bytes[i] > Config::thresholds::frontUS::min);	
+			// }
 
-			// steeringWheel.write(bytes[0]);
+			dds.frontUS.left.update((bytes[0] << 8) + bytes[1]); 
+			dds.frontUS.center.update((bytes[2] << 8) + bytes[3]); 
+			dds.frontUS.right.update((bytes[4] << 8) + bytes[5]); 
 
 			break; 
 
 		case Config::IDs::reception::rearUS:
-			assert(nbBytes == 3); 
+			// assert(nbBytes == 3); 
 
-			for(int i = 0; i < 3; i++)
-			{
-				assert(bytes[i] < Config::thresholds::rearUS::max); 
-				assert(bytes[i] > Config::thresholds::rearUS::min);	
-			}
+			// for(int i = 0; i < 3; i++)
+			// {
+			// 	assert(bytes[i] < Config::thresholds::rearUS::max); 
+			// 	assert(bytes[i] > Config::thresholds::rearUS::min);	
+			// }
 
-			// steeringWheel.write(bytes[0]);
-
-			break; 
-
-		case Config::IDs::reception::battery:
-			assert(nbBytes == 1); 
-			assert(bytes[0] < Config::thresholds::battery::max); 
-			assert(bytes[0] > Config::thresholds::battery::min);
-
-			dds.battery.update(bytes[0]);
+			dds.rearUS.left.update((bytes[0] << 8) + bytes[1]); 
+			dds.rearUS.center.update((bytes[2] << 8) + bytes[3]); 
+			dds.rearUS.right.update((bytes[4] << 8) + bytes[5]); 
 
 			break; 
 
-		case Config::IDs::reception::steeringWheel: 
-			assert(nbBytes == 1); 
-			assert(bytes[0] < Config::thresholds::steeringWheel::max); 
-			assert(bytes[0] > Config::thresholds::steeringWheel::min);
-
-			dds.steeringWheel.update(bytes[0]);
-
-			break; 
-
-		case Config::IDs::reception::leftMotorSpeed: 
+		case Config::IDs::reception::motorSpeed:
 			// assert(nbBytes == 1); 
-			// assert(bytes[0] < Config::thresholds::leftMotorSpeed::max); 
-			// assert(bytes[0] > Config::thresholds::leftMotorSpeed::min);
+			// assert(bytes[0] < Config::thresholds::battery::max); 
+			// assert(bytes[0] > Config::thresholds::battery::min);
 
-			dds.leftMotorSpeed.update(bytes[0]);
+			dds.rightMotorSpeed.update((bytes[0] << 8 ) + bytes[1]);
+			dds.leftMotorSpeed.update((bytes[2] << 8 ) + bytes[3]);
+			dds.motorSpeed.update(((bytes[0] << 8 ) + bytes[1] + (bytes[2] << 8 ) + bytes[3]) / 2);
 
 			break; 
 
-		case Config::IDs::reception::rightMotorSpeed: 
+		case Config::IDs::reception::positionOther: 
 			// assert(nbBytes == 1); 
-			// assert(bytes[0] < Config::thresholds::rightMotorSpeed::max); 
-			// assert(bytes[0] > Config::thresholds::rightMotorSpeed::min);
+			// assert(bytes[0] < Config::thresholds::steeringWheel::max); 
+			// assert(bytes[0] > Config::thresholds::steeringWheel::min);
 
-			dds.rightMotorSpeed.update(bytes[0]);
+			dds.wheelSensorLeft.update((bytes[0] << 8 ) + bytes[1]);
+			dds.wheelSensorRight.update((bytes[2] << 8 ) + bytes[3]);
+			dds.steeringPosFromLeft.update((bytes[4] << 8 ) + bytes[5]);
+			dds.battery.update((bytes[6] << 8 ) + bytes[7]);
 
 			break; 
 	}
