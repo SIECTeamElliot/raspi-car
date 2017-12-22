@@ -26,19 +26,24 @@ int main()
 
 	while(true) 
 	{
+		dds.motorSpeed.write(0);
 		dds.print(); 
 		sleep(1); 
 
 		dds.motorSpeed.write(0.2 * 256);
+		dds.print(); 
 		sleep(1); 
 
 		dds.motorSpeed.write(0.4 * 256);
+		dds.print(); 
 		sleep(1); 
 
 		dds.motorSpeed.write(0.6 * 256);
+		dds.print(); 
 		sleep(1); 
 
 		dds.motorSpeed.write(0.8 * 256);
+		dds.print(); 
 		sleep(1); 
 
 
