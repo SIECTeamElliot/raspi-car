@@ -151,7 +151,7 @@ void Can::listenTask()
 
     // TODO rajouter une sécurité sur la data
     if (sizeof(canFrame.data[0])>0 && listenCallback != nullptr) {
-         listenCallback(canFrame.can_id, nbytes, (char*) canFrame.data);
+         listenCallback(canFrame.can_id, canFrame.can_dlc, (char*) canFrame.data);
     }
 
   }
