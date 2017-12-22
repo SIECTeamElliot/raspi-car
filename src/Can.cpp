@@ -63,7 +63,7 @@ int Can::initFilters()
 			if(i < nbFilters - 1) 
 			{
 
-				 
+
 				std::cout << " - "; 
 			}
 			else 
@@ -151,7 +151,7 @@ void Can::listenTask()
 
     // TODO rajouter une sécurité sur la data
     if (sizeof(canFrame.data[0])>0 && listenCallback != nullptr) {
-      listenCallback(canFrame.can_id, nbytes, (char*) canFrame.data);
+         listenCallback(canFrame.can_id, nbytes, (char*) canFrame.data);
     }
 
   }
@@ -215,6 +215,7 @@ int Can::startListening(void (*callback)(uint32_t id, int nbBytes, char * bytes)
 	if( !listening && enable ) 
 	{
 		listenThread = new std::thread (&Can::listenTask, this); 
+		listenCallback = callback; 
 		listening = true; 
 	}
 }

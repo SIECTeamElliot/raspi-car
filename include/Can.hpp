@@ -16,7 +16,6 @@
 #include <thread>
 #include <iostream> 
 
-#define DEBUG true
 
 class Can 
 {

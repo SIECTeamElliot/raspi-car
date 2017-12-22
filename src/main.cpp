@@ -1,4 +1,3 @@
-#define DEBUG true
 
 #include "../include/Can.hpp" 
 #include "../include/DDSCan.h"
