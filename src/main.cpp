@@ -24,7 +24,7 @@ char toSpeed(float val)
 	}
 	else 
 	{
-		conv = (char) (256 - (val * 127));
+		conv = (char) (255 + (val * 128));
 	}
 
 	return conv;
@@ -43,23 +43,23 @@ int main()
 
 	while(true) 
 	{
+		dds.motorSpeed.write(127);
+		dds.print(); 
+		sleep(1); 
+
+		dds.motorSpeed.write(190);
+		dds.print(); 
+		sleep(1); 
+
+		dds.motorSpeed.write(255);
+		dds.print(); 
+		sleep(1); 
+
+		dds.motorSpeed.write(50);
+		dds.print(); 
+		sleep(1); 
+
 		dds.motorSpeed.write(0);
-		dds.print(); 
-		sleep(1); 
-
-		dds.motorSpeed.write(toSpeed(0.5));
-		dds.print(); 
-		sleep(1); 
-
-		dds.motorSpeed.write(toSpeed(1.0));
-		dds.print(); 
-		sleep(1); 
-
-		dds.motorSpeed.write(toSpeed(-0.5));
-		dds.print(); 
-		sleep(1); 
-
-		dds.motorSpeed.write(toSpeed(-1.0));
 		dds.print(); 
 		sleep(1); 
 
