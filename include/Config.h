@@ -9,23 +9,35 @@ namespace Config
 
 	namespace IDs
 	{
-		static const uint32_t steeringWheel = 1; 
-		static const uint32_t leftMotorSpeed = 2; 
-		static const uint32_t rightMotorSpeed = 3; 
-		static const uint32_t frontUS = 4; 
-		static const uint32_t rearUS = 5; 
-		static const uint32_t battery = 6; 
+		namespace emission 
+		{
+			static const uint32_t steeringWheel = 0x001; 
+			static const uint32_t leftMotorSpeed = 0x003; 
+			static const uint32_t rightMotorSpeed = 0x003; 
+			static const uint32_t frontUS = 4; 
+			static const uint32_t rearUS = 5; 
+			static const uint32_t battery = 6; 
+		}
 
-
+		namespace reception
+		{
+			static const uint32_t steeringWheel = 0x999; 
+			static const uint32_t leftMotorSpeed = 0x998; 
+			static const uint32_t rightMotorSpeed = 0x30; 
+			static const uint32_t frontUS = 4; 
+			static const uint32_t rearUS = 5; 
+			static const uint32_t battery = 0x800; 
+		}
+		
 		static const uint32_t nbFilters = 6; 
 		static const uint32_t filters[nbFilters] = {
-			steeringWheel, 
-			leftMotorSpeed,
-			rightMotorSpeed, 
-			frontUS, 
-			rearUS, 
-			battery
-		};
+			reception::steeringWheel, 
+			reception::leftMotorSpeed,
+			reception::rightMotorSpeed, 
+			reception::frontUS, 
+			reception::rearUS, 
+			reception::battery
+		};	
 	}
 
 	namespace thresholds

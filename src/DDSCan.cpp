@@ -7,9 +7,9 @@
 Can DDSCan::canBus(Config::IDs::nbFilters, Config::IDs::filters); 
 
 DDSCan::DDSCan() : 
-	steeringWheel(&DDSCan::sendUpdate<Config::IDs::steeringWheel>), 
-	leftMotorSpeed(&DDSCan::sendUpdate<Config::IDs::leftMotorSpeed>), 
-	rightMotorSpeed(&DDSCan::sendUpdate<Config::IDs::rightMotorSpeed>)
+	steeringWheel(&DDSCan::sendUpdate<Config::IDs::emission::steeringWheel>), 
+	leftMotorSpeed(&DDSCan::sendUpdate<Config::IDs::emission::leftMotorSpeed>), 
+	rightMotorSpeed(&DDSCan::sendUpdate<Config::IDs::emission::rightMotorSpeed>)
 {
 #if DEBUG
 	std::cout << "Init. DDSCan" << std::endl;
@@ -40,7 +40,7 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 #endif 
 	switch(id) 
 	{
-		case Config::IDs::frontUS:
+		case Config::IDs::reception::frontUS:
 			assert(nbBytes == 3); 
 
 			for(int i = 0; i < 3; i++)
@@ -53,7 +53,7 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 
 			break; 
 
-		case Config::IDs::rearUS:
+		case Config::IDs::reception::rearUS:
 			assert(nbBytes == 3); 
 
 			for(int i = 0; i < 3; i++)
@@ -66,7 +66,7 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 
 			break; 
 
-		case Config::IDs::battery:
+		case Config::IDs::reception::battery:
 			assert(nbBytes == 1); 
 			assert(bytes[0] < Config::thresholds::battery::max); 
 			assert(bytes[0] > Config::thresholds::battery::min);
@@ -75,7 +75,7 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 
 			break; 
 
-		case Config::IDs::steeringWheel: 
+		case Config::IDs::reception::steeringWheel: 
 			assert(nbBytes == 1); 
 			assert(bytes[0] < Config::thresholds::steeringWheel::max); 
 			assert(bytes[0] > Config::thresholds::steeringWheel::min);
@@ -84,7 +84,7 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 
 			break; 
 
-		case Config::IDs::leftMotorSpeed: 
+		case Config::IDs::reception::leftMotorSpeed: 
 			assert(nbBytes == 1); 
 			assert(bytes[0] < Config::thresholds::leftMotorSpeed::max); 
 			assert(bytes[0] > Config::thresholds::leftMotorSpeed::min);
@@ -93,7 +93,7 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 
 			break; 
 
-		case Config::IDs::rightMotorSpeed: 
+		case Config::IDs::reception::rightMotorSpeed: 
 			assert(nbBytes == 1); 
 			assert(bytes[0] < Config::thresholds::rightMotorSpeed::max); 
 			assert(bytes[0] > Config::thresholds::rightMotorSpeed::min);
