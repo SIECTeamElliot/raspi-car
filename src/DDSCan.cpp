@@ -20,7 +20,7 @@ DDSCan::DDSCan() :
 DDSCan::~DDSCan() 
 {}
 
-template <uint8_t ID, class T = int32_t>
+template <uint8_t ID, class T>
 void DDSCan::sendUpdate(const T& val)
 {
 #if DEBUG
