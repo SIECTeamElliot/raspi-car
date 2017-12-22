@@ -86,10 +86,10 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 			// assert(bytes[0] < Config::thresholds::steeringWheel::max); 
 			// assert(bytes[0] > Config::thresholds::steeringWheel::min);
 
-			dds.wheelSensorLeft.update((bytes[0] << 8 ) + bytes[1]);
-			dds.wheelSensorRight.update((bytes[2] << 8 ) + bytes[3]);
-			dds.steeringPosFromLeft.update((bytes[4] << 8 ) + bytes[5]);
-			dds.battery.update((bytes[6] << 8 ) + bytes[7]);
+			dds.wheelSensorLeft.update(bytes[0]);
+			dds.wheelSensorRight.update(bytes[1]);
+			dds.steeringPosFromLeft.update(bytes[2]);
+			dds.battery.update(bytes[3]);
 
 			break; 
 	}
