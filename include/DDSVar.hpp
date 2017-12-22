@@ -10,7 +10,7 @@ class DDSCan;
 
 enum VarDir_t { RO = 0, RW = 1 };
 
-template <VarDir_t DIR = RW, class T = int32_t> 
+template <VarDir_t DIR = RW, class T = uint32_t> 
 class DDSVar 
 {
 private: 

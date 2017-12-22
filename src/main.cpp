@@ -13,6 +13,8 @@
 // 	std::cout << std::endl;
 // }
 
+DDSCan dds;
+
 int main() 
 {
 
@@ -21,7 +23,7 @@ int main()
 //	while(1){
 //		Tests(iface);
 //	};
-	
+
 	while(true) 
 	{
 		dds.print(); 

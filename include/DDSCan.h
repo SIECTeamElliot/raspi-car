@@ -52,6 +52,6 @@ public:
 
 
 
-static DDSCan dds; 
+extern DDSCan dds; 
 
 #endif 
