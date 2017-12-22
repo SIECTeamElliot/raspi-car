@@ -6,6 +6,7 @@
 
 Can DDSCan::canBus(Config::IDs::nbFilters, Config::IDs::filters); 
 
+
 DDSCan::DDSCan() : 
 	motorSpeed(&DDSCan::sendUpdate<Config::IDs::emission::motorSpeed>), 
 	steeringPosFromLeft(&DDSCan::sendUpdate<Config::IDs::emission::steeringPosFromLeft>)

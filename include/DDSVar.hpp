@@ -44,7 +44,10 @@ public:
 	{
 		mx.lock(); 
 		(*value) = val; 
-		onWrite(val);
+		if(onWrite != nullptr)
+		{
+			onWrite(val);
+		} 
 		mx.unlock();
 	}
 
