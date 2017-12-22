@@ -15,6 +15,21 @@
 
 DDSCan dds;
 
+char toSpeed(float val) 
+{
+	char conv; 
+	if(val >= 0) 
+	{
+		conv = (char) 128 * val; 
+	}
+	else 
+	{
+		conv = (char) (256 - (val * 127));
+	}
+
+	return conv;
+}
+
 int main() 
 {
 
@@ -24,25 +39,27 @@ int main()
 //		Tests(iface);
 //	};
 
+
+
 	while(true) 
 	{
 		dds.motorSpeed.write(0);
 		dds.print(); 
 		sleep(1); 
 
-		dds.motorSpeed.write(static_cast<char>(0.2));
+		dds.motorSpeed.write(toSpeed(0.5));
 		dds.print(); 
 		sleep(1); 
 
-		dds.motorSpeed.write(static_cast<char>(0.8));
+		dds.motorSpeed.write(toSpeed(1.0));
 		dds.print(); 
 		sleep(1); 
 
-		dds.motorSpeed.write(static_cast<char>(-0.2));
+		dds.motorSpeed.write(toSpeed(-0.5));
 		dds.print(); 
 		sleep(1); 
 
-		dds.motorSpeed.write(static_cast<char>(-0.8));
+		dds.motorSpeed.write(toSpeed(-1.0));
 		dds.print(); 
 		sleep(1); 
 
