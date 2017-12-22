@@ -44,22 +44,27 @@ int main()
 	while(true) 
 	{
 		dds.motorSpeed.write(127);
+		dds.steeringPosFromLeft.write(100); 
 		dds.print(); 
 		sleep(1); 
 
 		dds.motorSpeed.write(190);
+		dds.steeringPosFromLeft.write(88); 
 		dds.print(); 
 		sleep(1); 
 
 		dds.motorSpeed.write(255);
+		dds.steeringPosFromLeft.write(138); 
 		dds.print(); 
 		sleep(1); 
 
 		dds.motorSpeed.write(50);
+		dds.steeringPosFromLeft.write(114); 
 		dds.print(); 
 		sleep(1); 
 
 		dds.motorSpeed.write(0);
+		dds.steeringPosFromLeft.write(95); 
 		dds.print(); 
 		sleep(1); 
 
