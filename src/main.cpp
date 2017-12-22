@@ -30,19 +30,19 @@ int main()
 		dds.print(); 
 		sleep(1); 
 
-		dds.motorSpeed.write(0.2 * 256);
+		dds.motorSpeed.write(static_cast<char>(0.2));
 		dds.print(); 
 		sleep(1); 
 
-		dds.motorSpeed.write(0.4 * 256);
+		dds.motorSpeed.write(static_cast<char>(0.8));
 		dds.print(); 
 		sleep(1); 
 
-		dds.motorSpeed.write(0.6 * 256);
+		dds.motorSpeed.write(static_cast<char>(-0.2));
 		dds.print(); 
 		sleep(1); 
 
-		dds.motorSpeed.write(0.8 * 256);
+		dds.motorSpeed.write(static_cast<char>(-0.8));
 		dds.print(); 
 		sleep(1); 
 
