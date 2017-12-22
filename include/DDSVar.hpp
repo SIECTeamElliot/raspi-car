@@ -21,11 +21,16 @@ private:
 
 	void (*onWrite)(const T&);
 
-public: 
+public:
+	DDSVar() : 
+		value( new T ), 
+		onWrite(nullptr)
+	{}
 
-	DDSVar(void (*onwrite)(const T&) = nullptr) :
+
+	DDSVar(void (*p_onwrite)(const T&)) :
 			value( new T ), 
-			onWrite(onWrite)
+			onWrite(p_onwrite)
 	{}
 
 	inline T read(void)

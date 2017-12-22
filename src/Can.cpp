@@ -87,9 +87,7 @@ int Can::initFilters()
 // Init CAN socket and store it in canSckt
 int Can::initSocket()
 {
-	int nbytes;
 	struct sockaddr_can addr;
-	struct can_frame frame;
 	struct ifreq ifr;
 
 	// opening socket CAN_RAW//SOCK_RAW or CAN_BCM // SOCK_DGRAM BCM = cyclique
@@ -116,6 +114,7 @@ int Can::initSocket()
 		std::cerr << "Error in socket bind" << std::endl;
 		return -2;
 	}
+	return 0;
 }
 
 
@@ -218,6 +217,7 @@ int Can::startListening(void (*callback)(uint32_t id, int nbBytes, char * bytes)
 		listenCallback = callback; 
 		listening = true; 
 	}
+	return 0; 
 }
 
 // Stops the listening thread
@@ -228,6 +228,7 @@ int Can::stopListening()
 		delete listenThread;
 		listening = false;
 	}
+	return 0; 
 }
 
 

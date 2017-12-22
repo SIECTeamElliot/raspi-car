@@ -23,7 +23,7 @@ namespace Config
 			static const uint32_t positionOther = 0x010; 
 		}
 		
-		static const uint32_t nbFilters = 6; 
+		static const uint32_t nbFilters = 4; 
 		static const uint32_t filters[nbFilters] = {
 			reception::motorSpeed, 
 			reception::frontUS,
