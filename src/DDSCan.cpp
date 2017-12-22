@@ -11,7 +11,7 @@ DDSCan::DDSCan() :
 	leftMotorSpeed(&DDSCan::sendUpdate<Config::IDs::emission::leftMotorSpeed>), 
 	rightMotorSpeed(&DDSCan::sendUpdate<Config::IDs::emission::rightMotorSpeed>)
 {
-#if DEBUG
+#ifdef DEBUG
 	std::cout << "Init. DDSCan" << std::endl;
 #endif
 	canBus.startListening(&canListenCallback); 
@@ -23,7 +23,7 @@ DDSCan::~DDSCan()
 template <uint8_t ID, class T>
 void DDSCan::sendUpdate(const T& val)
 {
-#if DEBUG
+#ifdef DEBUG
 	std::cout << "[DDS] Sending update to id ID with value : " << val << std::endl;
 #endif
 	struct can_frame frame; 
@@ -35,7 +35,7 @@ void DDSCan::sendUpdate(const T& val)
 
 void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 {
-#if DEBUG 
+#ifdef DEBUG 
 	std::cout << "[DDS] Received frame with id " << id << ", length " << nbBytes << std::endl; 
 #endif 
 	switch(id) 
