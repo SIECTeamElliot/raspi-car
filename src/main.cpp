@@ -21,6 +21,10 @@ int main()
 //	while(1){
 //		Tests(iface);
 //	};
-	while(true);
+	while(true) 
+	{
+		dds.print(); 
+		sleep(1); 
+	}
 	return 0; 
 }

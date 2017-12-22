@@ -93,3 +93,22 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 			break; 
 	}
 }
+
+void DDSCan::print()
+{
+	std::cout << "---------- DDS ------------" << std::endl;
+	std::cout << "rightMotorSpeed : " << rightMotorSpeed.read() << std::endl;
+	std::cout << "leftMotorSpeed : " << leftMotorSpeed.read() << std::endl;
+	std::cout << "motorSpeed : " << motorSpeed.read() << std::endl;
+	std::cout << "frontUS.left : " << frontUS.left.read() << std::endl;
+	std::cout << "frontUS.center : " << frontUS.center.read() << std::endl;
+	std::cout << "frontUS.right : " << frontUS.right.read() << std::endl;
+	std::cout << "rearUS.left : " << rearUS.left.read() << std::endl;
+	std::cout << "rearUS.center : " << rearUS.center.read() << std::endl;
+	std::cout << "rearUS.right : " << rearUS.right.read() << std::endl;
+	std::cout << "wheelSensorLeft : " << wheelSensorLeft.read() << std::endl;
+	std::cout << "wheelSensorRight : " << wheelSensorRight.read() << std::endl;
+	std::cout << "steeringPosFromLeft : " << steeringPosFromLeft.read() << std::endl;
+	std::cout << "battery : " << battery.read() << std::endl;
+	std::cout << "---------------------------" << std::endl;
+}

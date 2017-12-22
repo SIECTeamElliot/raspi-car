@@ -21,6 +21,8 @@ public:
 	DDSCan(); 
 	virtual ~DDSCan(); 
 
+	void print();
+
 	// Recep ID 0x30
 	DDSVar<RO> rightMotorSpeed;
 	DDSVar<RO> leftMotorSpeed; 
@@ -47,6 +49,8 @@ public:
 	DDSVar<RW> steeringPosFromLeft; // Emiss ID 0x01
  	DDSVar<RO> battery; 
 }; 
+
+
 
 static DDSCan dds; 
 
