@@ -86,8 +86,8 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 
 		case Config::IDs::reception::leftMotorSpeed: 
 			// assert(nbBytes == 1); 
-			assert(bytes[0] < Config::thresholds::leftMotorSpeed::max); 
-			assert(bytes[0] > Config::thresholds::leftMotorSpeed::min);
+			// assert(bytes[0] < Config::thresholds::leftMotorSpeed::max); 
+			// assert(bytes[0] > Config::thresholds::leftMotorSpeed::min);
 
 			dds.leftMotorSpeed.update(bytes[0]);
 
@@ -95,8 +95,8 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 
 		case Config::IDs::reception::rightMotorSpeed: 
 			// assert(nbBytes == 1); 
-			assert(bytes[0] < Config::thresholds::rightMotorSpeed::max); 
-			assert(bytes[0] > Config::thresholds::rightMotorSpeed::min);
+			// assert(bytes[0] < Config::thresholds::rightMotorSpeed::max); 
+			// assert(bytes[0] > Config::thresholds::rightMotorSpeed::min);
 
 			dds.rightMotorSpeed.update(bytes[0]);
 
