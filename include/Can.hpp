@@ -18,7 +18,6 @@
 
 #define DEBUG true
 
-
 class Can 
 {
 private: 
@@ -35,15 +34,16 @@ private:
 	int initFilters(); 
 	int initSocket();
 
-	void (*listenCallback)(int nbBytes, char * bytes) = nullptr; 
+	void (*listenCallback)(uint32_t id, int nbBytes, char * bytes) = nullptr;
 	void listenTask(); 
 
 public:
 	Can(); 
-	Can(int nbFilters, unsigned int * idFilters); 
+	Can(const int nbFilters, const unsigned int * idFilters); 
 	virtual ~Can(); 
 	
-	int startListening(void (*callback)(int nbBytes, char * bytes) = nullptr);
+	int startListening(void (*callback)(uint32_t id, int nbBytes, char * bytes) = nullptr);
+
 	int stopListening(); 
 
 	int sendFrame(struct can_frame * frame);
@@ -52,6 +52,7 @@ public:
 	enum FrameDir_t { None = 0, Emission = 1, Reception = 2 };
 };
 
-inline void printFrame(Can::FrameDir_t dir, struct can_frame *frame);  
+void printFrame(Can::FrameDir_t dir, struct can_frame *frame); 
+
 
 #endif

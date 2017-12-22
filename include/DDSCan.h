@@ -1,15 +1,18 @@
 #ifndef DDSCAN_H
 #define DDSCAN_H
 
-#include "Can.h"
+#include "Can.hpp"
 #include "DDSVar.hpp"
+#include "Config.h"
+#include <cassert>
+
+void canListenCallback(uint32_t id, int nbBytes, char * bytes);
 
 class DDSCan
 {
 private: 
-	void canListenCallback(int nbBytes, unsigned char * bytes);
-
 	static Can canBus; 
+	friend void canListenCallback(uint32_t id, int nbBytes, char * bytes);
 
 	template <uint8_t ID, class T = int32_t>
 	static void sendUpdate(const T& val);
@@ -26,5 +29,7 @@ public:
 	DDSVar<RO> rearUS[3]; 
 	DDSVar<RO> battery; 
 }; 
+
+static DDSCan dds; 
 
 #endif 

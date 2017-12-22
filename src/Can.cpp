@@ -1,4 +1,5 @@
-#include "../include/Can.h"
+#include "Can.hpp"
+
 
 
 // Construct a CAN object - must be call once 
@@ -12,13 +13,16 @@ Can::Can() :
 	initFilters();
 }
 
-Can::Can(int nbFilters, unsigned int * idFilters) : 
+Can::Can(const int p_nbFilters, const unsigned int * p_idFilters) : 
 		enable(false), 
 		canSckt(new int), 
-		nbFilters(nbFilters),
+		nbFilters(p_nbFilters),
 		idFilters(new unsigned int[nbFilters])
 {
-	//cpy
+	for(int i = 0;  i < nbFilters; i++)
+	{
+		idFilters[i] = p_idFilters[i]; 
+	}
 	initSocket(); 
 	initFilters();
 }
@@ -53,15 +57,24 @@ int Can::initFilters()
 		for(int i = 0; i < nbFilters; i++)
 		{
 			rfilter[i].can_mask = CAN_SFF_MASK;
-			// rfilter[i].can_id = idFilters[i];
-			rfilter[i].can_id = 0x100;
-
+			rfilter[i].can_id = idFilters[i];
 #ifdef DEBUG
-			std::cout << rfilter[i].can_id << " " << std::endl; 
-		}
-#else 
-		}
+			std::cout << idFilters[i]; 
+			if(i < nbFilters - 1) 
+			{
+
+				 
+				std::cout << " - "; 
+			}
+			else 
+			{
+				std::cout << std::endl;
+			}
 #endif
+		}
+
+
+
 
 		return setsockopt((*this->canSckt), SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, sizeof(rfilter));
 	}
@@ -138,7 +151,7 @@ void Can::listenTask()
 
     // TODO rajouter une sécurité sur la data
     if (sizeof(canFrame.data[0])>0 && listenCallback != nullptr) {
-      listenCallback(nbytes, (char*) canFrame.data);
+      listenCallback(canFrame.can_id, nbytes, (char*) canFrame.data);
     }
 
   }
@@ -197,7 +210,7 @@ int Can::sendFrame(struct can_frame *frame, int nbBytes, char * bytes)
 }
 
 // Starts the listening thread
-int Can::startListening(void (*callback)(int nbBytes, char * data))
+int Can::startListening(void (*callback)(uint32_t id, int nbBytes, char * bytes))
 {
 	if( !listening && enable ) 
 	{
@@ -217,7 +230,7 @@ int Can::stopListening()
 }
 
 
-inline void printFrame(Can::FrameDir_t dir, struct can_frame *frame)
+void printFrame(Can::FrameDir_t dir, struct can_frame *frame)
 {
 	std::cout << std::left;
 	std::cout.width(7); 
@@ -262,4 +275,4 @@ inline void printFrame(Can::FrameDir_t dir, struct can_frame *frame)
 		std::cout << +frame->data[i];
 	}
 	std::cout << std::endl;
-}
+} 

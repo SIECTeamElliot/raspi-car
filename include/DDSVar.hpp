@@ -16,6 +16,7 @@ class DDSVar
 private: 
 	std::shared_ptr<T> value; 
 	std::mutex mx; 
+
 	friend class DDSCan; 
 
 	void (*onWrite)(const T&);
@@ -31,7 +32,7 @@ public:
 	{
 		T val; 
 		mx.lock(); 
-		val = value;
+		val = (*value);
 		mx.unlock(); 
 		return val;  
 	}
@@ -42,9 +43,19 @@ public:
 	write(const T& val)
 	{
 		mx.lock(); 
-		value = val; 
+		(*value) = val; 
 		onWrite(val);
 		mx.unlock();
+	}
+
+	void update(const T& val) 
+	{
+		mx.lock();
+#if DEBUG
+		std::cout << "[DDSVar] Update value - old : " << *value << " - new : " << val << std::endl;
+#endif		
+		(*value) = val; 
+		mx.unlock(); 
 	}
 
 	template <VarDir_t D = DIR>

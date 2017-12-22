@@ -1,6 +1,6 @@
 #define DEBUG true
 
-#include "../include/Can.h" 
+#include "../include/Can.hpp" 
 #include "../include/DDSCan.h"
 #include "../include/communicationSTM.h"
 #include <iostream>
@@ -16,10 +16,12 @@
 
 int main() 
 {
-	Can iface; 
-	iface.startListening();
-	while(1){
-		Tests(iface);
-	};
+
+//	Can iface; 
+//	iface.startListening();
+//	while(1){
+//		Tests(iface);
+//	};
+	while(true);
 	return 0; 
 }

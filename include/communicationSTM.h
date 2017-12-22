@@ -22,7 +22,7 @@
 
 //#include <wiringPi.h>
 
-#include "Can.h"
+#include "Can.hpp"
 
 /*********************** InitMessage **********************
  * Initialisation d'un message à envoyer
