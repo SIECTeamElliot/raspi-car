@@ -61,7 +61,6 @@ int main()
 	}
 #endif 
 
-		
 #ifdef PARK
 	while( dds.parkFinished.read() == 0 )
 	{
