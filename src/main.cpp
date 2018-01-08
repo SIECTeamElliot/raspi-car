@@ -45,7 +45,7 @@ int main()
 	{
 		for(int i = 0; i < 25; i++) 
 		{
-	 		if(dds.frontUS.left.read() > 20 || dds.frontUS.right.read() > 20 || dds.frontUS.center.read() > 20)
+	 		if(dds.frontUS.left.read() > 2000 || dds.frontUS.right.read() > 2000 || dds.frontUS.center.read() > 2000)
 			{
 				dds.motorSpeed.write(255);
 				dds.steeringPosFromLeft.write(112);

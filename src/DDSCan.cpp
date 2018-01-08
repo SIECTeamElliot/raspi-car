@@ -89,6 +89,7 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 			dds.wheelSensorRight.update(bytes[1]);
 			dds.steeringPosFromLeft.update(bytes[2]);
 			dds.battery.update(bytes[3]);
+			dds.parkFinished.update(bytes[4]);
 
 			break; 
 	}

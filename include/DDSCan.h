@@ -31,6 +31,7 @@ public:
 	// Emiss ID 0x50
 	DDSVar<RW> parkOrder; 
 
+
 	// Emiss ID 0x03
 	DDSVar<RW> motorSpeed;
 
@@ -52,6 +53,8 @@ public:
 	DDSVar<RO> wheelSensorRight;
 	DDSVar<RW> steeringPosFromLeft; // Emiss ID 0x01
  	DDSVar<RO> battery; 
+	DDSVar<RO> parkFinished; 
+ 	
 }; 
 
 

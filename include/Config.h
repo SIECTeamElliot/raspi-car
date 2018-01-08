@@ -21,7 +21,8 @@ namespace Config
 			static const uint32_t motorSpeed = 0x030; 
 			static const uint32_t frontUS = 0x100; 
 			static const uint32_t rearUS = 0x110; 
-			static const uint32_t positionOther = 0x010; 
+			static const uint32_t positionOther = 0x010;
+			static const uint32_t parkFinished = 0x051; 
 		}
 		
 		static const uint32_t nbFilters = 4; 
@@ -29,7 +30,8 @@ namespace Config
 			reception::motorSpeed, 
 			reception::frontUS,
 			reception::rearUS, 
-			reception::positionOther
+			reception::positionOther, 
+			reception::parkFinished
 		};	
 	}
 
