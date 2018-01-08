@@ -1,15 +1,13 @@
 #include "../include/DDSCan.h"
 
-#define ID_STEERING_WHEEL 0
-#define ID_LEFT_MOTOR_SPEED 1
-#define ID_RIGHT_MOTOR_SPEED 2
 
 Can DDSCan::canBus(Config::IDs::nbFilters, Config::IDs::filters); 
 
 
 DDSCan::DDSCan() : 
 	motorSpeed(&DDSCan::sendUpdate<Config::IDs::emission::motorSpeed>), 
-	steeringPosFromLeft(&DDSCan::sendUpdate<Config::IDs::emission::steeringPosFromLeft>)
+	steeringPosFromLeft(&DDSCan::sendUpdate<Config::IDs::emission::steeringPosFromLeft>), 
+	parkOrder(&DDSCan::sendUpdate<Config::IDs::emission::parkOrder>)
 {
 #ifdef DEBUG
 	std::cout << "Init. DDSCan" << std::endl;
@@ -32,6 +30,7 @@ void DDSCan::sendUpdate(const T& val)
 	frame.data[0] = val; 
 	canBus.sendFrame(&frame); 
 }
+
 
 void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 {
@@ -111,5 +110,7 @@ void DDSCan::print()
 	std::cout << "wheelSensorRight : " << wheelSensorRight.read() << std::endl;
 	std::cout << "steeringPosFromLeft : " << steeringPosFromLeft.read() << std::endl;
 	std::cout << "battery : " << battery.read() << std::endl;
+	std::cout << std::boolalpha; 
+	std::cout << "parkOrder : " << parkOrder.read() << std::endl;
 	std::cout << "---------------------------" << std::endl;
 }

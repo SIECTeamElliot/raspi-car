@@ -13,6 +13,7 @@ namespace Config
 		{
 			static const uint32_t motorSpeed = 0x003; 
 			static const uint32_t steeringPosFromLeft = 0x001; 
+			static const uint32_t parkOrder = 0x050;
 		}
 
 		namespace reception

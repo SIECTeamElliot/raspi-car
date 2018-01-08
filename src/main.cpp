@@ -43,32 +43,30 @@ int main()
 
 	while(true) 
 	{
-		dds.motorSpeed.write(127);
-		dds.steeringPosFromLeft.write(100); 
-		dds.print(); 
-		sleep(1); 
+		for(int i = 0; i < 25; i++) 
+		{
+	 		if(dds.frontUS.left.read() > 20 || dds.frontUS.right.read() > 20 || dds.frontUS.center.read() > 20)
+			{
+				dds.motorSpeed.write(255);
+				dds.steeringPosFromLeft.write(112);
+				dds.print();
+				sleep(1);
+			}
+			else 
+			{
+				dds.motorSpeed.write(127);
+				dds.steeringPosFromLeft.write(112);
+				dds.print();
+				sleep(1);
+			}
 
-		dds.motorSpeed.write(190);
-		dds.steeringPosFromLeft.write(88); 
-		dds.print(); 
-		sleep(1); 
-
-		dds.motorSpeed.write(255);
-		dds.steeringPosFromLeft.write(138); 
-		dds.print(); 
-		sleep(1); 
-
-		dds.motorSpeed.write(50);
-		dds.steeringPosFromLeft.write(114); 
-		dds.print(); 
-		sleep(1); 
-
-		dds.motorSpeed.write(0);
-		dds.steeringPosFromLeft.write(95); 
-		dds.print(); 
-		sleep(1); 
-
-
+		}
+		for(int i = 0; i < 25; i++) 
+		{
+			dds.parkOrder.write(1)	; 
+			dds.print(); 
+			sleep(1);
+		}
 	}
 	return 0; 
 }

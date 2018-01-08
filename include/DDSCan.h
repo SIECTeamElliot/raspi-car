@@ -17,6 +17,7 @@ private:
 	template <uint8_t ID, class T = int32_t>
 	static void sendUpdate(const T& val);
 
+
 public:
 	DDSCan(); 
 	virtual ~DDSCan(); 
@@ -26,6 +27,9 @@ public:
 	// Recep ID 0x30
 	DDSVar<RO> rightMotorSpeed;
 	DDSVar<RO> leftMotorSpeed; 
+
+	// Emiss ID 0x50
+	DDSVar<RW> parkOrder; 
 
 	// Emiss ID 0x03
 	DDSVar<RW> motorSpeed;
