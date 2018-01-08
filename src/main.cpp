@@ -40,10 +40,10 @@ int main()
 //	};
 
 
-
+#ifdef ROLL
 	while(true) 
 	{
-#ifdef ROLL
+
  		if(dds.frontUS.left.read() > 2000 || dds.frontUS.right.read() > 2000 || dds.frontUS.center.read() > 2000)
 		{
 			dds.motorSpeed.write(255);
@@ -58,12 +58,17 @@ int main()
 			dds.print();
 			sleep(1);
 		}
-#endif
+	}
+#endif 
+
+		
 #ifdef PARK
+	while( dds.parkFinished.read() == 0 )
+	{
 		dds.parkOrder.write(1)	; 
 		dds.print(); 
 		sleep(1);
-#endif
 	}
+#endif
 	return 0; 
 }
