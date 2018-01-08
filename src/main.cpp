@@ -43,30 +43,27 @@ int main()
 
 	while(true) 
 	{
-		for(int i = 0; i < 25; i++) 
+#ifdef ROLL
+ 		if(dds.frontUS.left.read() > 2000 || dds.frontUS.right.read() > 2000 || dds.frontUS.center.read() > 2000)
 		{
-	 		if(dds.frontUS.left.read() > 2000 || dds.frontUS.right.read() > 2000 || dds.frontUS.center.read() > 2000)
-			{
-				dds.motorSpeed.write(255);
-				dds.steeringPosFromLeft.write(112);
-				dds.print();
-				sleep(1);
-			}
-			else 
-			{
-				dds.motorSpeed.write(127);
-				dds.steeringPosFromLeft.write(112);
-				dds.print();
-				sleep(1);
-			}
-
-		}
-		for(int i = 0; i < 25; i++) 
-		{
-			dds.parkOrder.write(1)	; 
-			dds.print(); 
+			dds.motorSpeed.write(255);
+			dds.steeringPosFromLeft.write(112);
+			dds.print();
 			sleep(1);
 		}
+		else 
+		{
+			dds.motorSpeed.write(127);
+			dds.steeringPosFromLeft.write(112);
+			dds.print();
+			sleep(1);
+		}
+#endif
+#ifdef PARK
+		dds.parkOrder.write(1)	; 
+		dds.print(); 
+		sleep(1);
+#endif
 	}
 	return 0; 
 }
