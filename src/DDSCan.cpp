@@ -48,9 +48,9 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 			// 	assert(bytes[i] > Config::thresholds::frontUS::min);	
 			// }
 
-			dds.frontUS.left.update(bytes[0] + bytes[1] << 8); 
-			dds.frontUS.center.update(bytes[2] + bytes[3] << 8); 
-			dds.frontUS.right.update(bytes[4] + bytes[5] << 8); 
+			dds.frontUS.left.update(bytes[0] + (bytes[1] << 8)); 
+			dds.frontUS.center.update(bytes[2] + (bytes[3] << 8)); 
+			dds.frontUS.right.update(bytes[4] + (bytes[5] << 8)); 
 
 			break; 
 
@@ -63,9 +63,9 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 			// 	assert(bytes[i] > Config::thresholds::rearUS::min);	
 			// }
 
-			dds.rearUS.left.update(bytes[0] + bytes[1] << 8); 
-			dds.rearUS.center.update(bytes[2] + bytes[3] << 8); 
-			dds.rearUS.right.update(bytes[4] + bytes[5] << 8); 
+			dds.rearUS.left.update(bytes[0] + (bytes[1] << 8)); 
+			dds.rearUS.center.update(bytes[2] + (bytes[3] << 8)); 
+			dds.rearUS.right.update(bytes[4] + (bytes[5] << 8)); 
 
 			break; 
 
