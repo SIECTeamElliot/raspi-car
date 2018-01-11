@@ -3,6 +3,8 @@
 #include "../include/DDSCan.h"
 #include "../include/communicationSTM.h"
 #include <iostream>
+#define ROLL
+#define PARK
 
 // void print(int nbBytes, unsigned char * bytes) 
 // {
