@@ -39,9 +39,22 @@ int main()
 //	while(1){
 //		Tests(iface);
 //	};
-
-
-#ifdef ROLL
+    LineFinder *lf = new LineFinder();
+    thread t1 = lf->run();
+    int i = 0;
+    while (i < 1000) {
+        tuple<double, double, double> result = lf->getLastResult();
+        double command = lf->getLastCommand();
+        cout << "offset: " << get<0>(result) << ", \tangle: " << get<1>(result) <<  ", \tcommand " << command<<endl;
+        i++;
+        //waitKey(100);
+        this_thread::sleep_for(chrono::milliseconds(100));
+    }
+    cout << "stopping" << endl;
+    lf->stop();
+    t1.join();
+    cout << "ending" << endl;
+    
 	while(true) 
 	{
 
@@ -60,17 +73,5 @@ int main()
 			sleep(1);
 		}
 	}
-#else 
-#ifdef PARK
-	while( dds.parkFinished.read() == 0 )
-	{
-		dds.parkOrder.write(1)	; 
-		dds.print(); 
-		sleep(1);
-	}
-#else 
-	while(true);
-#endif
-#endif
 	return 0; 
 }

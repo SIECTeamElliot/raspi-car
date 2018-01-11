@@ -49,9 +49,11 @@ public :
 	
 
 	tuple<double, double, double> getLastResult();
+	double getLastCommand();
 
 protected:
 	tuple<double, double, double> lastResult;
+	double lastCommand;
 	int width;
 	int height;
 	int heightCropped;

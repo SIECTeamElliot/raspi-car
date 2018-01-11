@@ -1,5 +1,4 @@
 
-//#include "stdafx.h"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <opencv2/opencv.hpp>
@@ -41,6 +40,7 @@ void LineFinder::init() {
 	width = srcI.size().width;
 	heightCropped = int(height * DOWN_SECTION);
 	subSize = Rect(0, height - heightCropped, width, heightCropped - 1);
+    running = false;
 }
 
 void LineFinder::_run() {
@@ -106,12 +106,13 @@ void LineFinder::_run() {
 			}
 		}
 
-		// linear regression
+		// linear regression and points calculation
 		tuple <double, double, double> coefs = linReg(maximums, width, height);
 		Point pt1((int)get<1>(coefs), 0);
 		int origin = int(nRows* get<0>(coefs) + get<1>(coefs));
 		Point pt2(origin, nRows);
 		double angle = atan(get<0>(coefs));
+		double correlCoef = get<2>(coefs);
 
 		// display line
 		//cout << "coefs : " << coefs.first << ", " << coefs.second << endl;
@@ -153,9 +154,18 @@ void LineFinder::_run() {
 
 #endif // (DISPLAY_ON == 1)
 
+		double command =  angle_d / 45.0;
+		if (command <-1) command =-1;
+		if (command >1) command =1;
+		command += origin_d;
+		if (command <-1) command =-1;
+		if (command >1) command =1;
+
+
 
 		mut_lastResult.lock();
-		lastResult = tuple<double, double, double>(origin_d, angle_d, get<2>(coefs));
+		lastResult = tuple<double, double, double>(origin_d, angle_d, correlCoef);
+		if (correlCoef > 0.5) lastCommand = command;
 		mut_lastResult.unlock();
 
 
@@ -166,7 +176,12 @@ void LineFinder::_run() {
 	camera.release();
 }
 
-
+double LineFinder::getLastCommand() {
+	mut_lastResult.lock();
+	double last = lastCommand;
+	mut_lastResult.unlock();
+	return last;
+}
 
 
 tuple<double, double, double> LineFinder::getLastResult() {
