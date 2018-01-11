@@ -1,7 +1,8 @@
 
-#include "../include/Can.hpp" 
+#include "../include/Can.hpp"
 #include "../include/DDSCan.h"
 #include "../include/communicationSTM.h"
+#include "../include/lineFinder.h"
 #include <iostream>
 
 // void print(int nbBytes, unsigned char * bytes) 
