@@ -15,7 +15,7 @@
 // }
 
 DDSCan dds;
-EventManager ev("../../communication_file.txt"); 
+EventManager ev("../../communication_file.txt", dds); 
 
 char toSpeed(float val) 
 {

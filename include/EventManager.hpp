@@ -8,16 +8,18 @@
 #include <boost/algorithm/string.hpp>
 #include <vector>
 
+#include <DDSCan.h>
+#include <DDSCallback.hpp>
 
 class Event
 {
 private: 
 	bool value; 
 	std::string eventName; 
-	void (*callback)(bool value); 
+	DDSCallback * callback; 
 
 public: 
-	Event(std::string eventName, void (*cb)(bool value) = nullptr) : 
+	Event(std::string eventName, DDSCallback * cb = nullptr) : 
 		eventName(eventName)
 	{
 		callback = cb; 
@@ -31,7 +33,7 @@ public:
 		value = true;
 		if(callback != nullptr)
 		{
-			callback(value); 
+			(*callback)(value); 
 		}
 		std::cout << std::boolalpha; 
 		std::cout << "ev: " << eventName << " - value: " << value << std::endl;
@@ -42,7 +44,7 @@ public:
 		value = false; 
 		if(callback != nullptr)
 		{
-			callback(value); 
+			(*callback)(value); 
 		}
 		std::cout << std::boolalpha; 
 		std::cout << "ev: " << eventName << " - value: " << value << std::endl;
@@ -69,6 +71,8 @@ private:
 	std::string filename;
 	const std::string delimiter;
 	const std::string keyword_on, keyword_off; 
+
+	DDSCan & dds; 
 
 	std::string readLastLine()
 	{
@@ -100,17 +104,18 @@ private:
 
 
 public: 
-	EventManager(std::string filename) : 
+	EventManager(std::string filename, DDSCan & dds) : 
 		filename(filename), 
 		delimiter(" "), 
 		keyword_on("on"), 
-		keyword_off("off")
+		keyword_off("off"), 
+		dds(dds)
 	{
 		listenThread = new std::thread(&EventManager::refreshEvents, this); 
-		eventList.push_back(new Event("up"));
-		eventList.push_back(new Event("down"));
-		eventList.push_back(new Event("left"));
-		eventList.push_back(new Event("right"));
+		eventList.push_back(new Event("up", new DDSCallback(&dds.motorSpeed, 127, 200)));
+		eventList.push_back(new Event("down", new DDSCallback(&dds.motorSpeed, 127, 200)));
+		eventList.push_back(new Event("left", new DDSCallback(&dds.steeringPosFromLeft, 112, 135)));
+		eventList.push_back(new Event("right", new DDSCallback(&dds.steeringPosFromLeft, 112, 88)));
 		eventList.push_back(new Event("stop"));
 		eventList.push_back(new Event("yesPark"));
 		eventList.push_back(new Event("noPark"));
