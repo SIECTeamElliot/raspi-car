@@ -3,6 +3,7 @@
 #include "../include/DDSCan.h"
 #include "../include/communicationSTM.h"
 #include <iostream>
+#include <EventManager.hpp>
 
 // void print(int nbBytes, unsigned char * bytes) 
 // {
@@ -14,6 +15,7 @@
 // }
 
 DDSCan dds;
+EventManager ev("../../communication_file.txt"); 
 
 char toSpeed(float val) 
 {
