@@ -35,8 +35,10 @@ public:
 		{
 			(*callback)(value); 
 		}
+#ifdef DEBUG
 		std::cout << std::boolalpha; 
 		std::cout << "ev: " << eventName << " - value: " << value << std::endl;
+#endif 
 	}
 
 	void trig_off()
@@ -46,8 +48,10 @@ public:
 		{
 			(*callback)(value); 
 		}
+#ifdef DEBUG
 		std::cout << std::boolalpha; 
 		std::cout << "ev: " << eventName << " - value: " << value << std::endl;
+#endif
 	}
 
 	bool operator==(std::string& o) 
