@@ -112,9 +112,9 @@ public:
 		dds(dds)
 	{
 		listenThread = new std::thread(&EventManager::refreshEvents, this); 
-		eventList.push_back(new Event("up", new DDSCallback(&dds.motorSpeed, 127, 200)));
-		eventList.push_back(new Event("down", new DDSCallback(&dds.motorSpeed, 127, 20)));
-		eventList.push_back(new Event("left", new DDSCallback(&dds.steeringPosFromLeft, 112, 135)));
+		eventList.push_back(new Event("up", new DDSCallback(&dds.motorSpeed, 127, 254)));
+		eventList.push_back(new Event("down", new DDSCallback(&dds.motorSpeed, 127, 0)));
+		eventList.push_back(new Event("left", new DDSCallback(&dds.steeringPosFromLeft, 112, 138)));
 		eventList.push_back(new Event("right", new DDSCallback(&dds.steeringPosFromLeft, 112, 88)));
 		eventList.push_back(new Event("stop"));
 		eventList.push_back(new Event("yesPark"));
