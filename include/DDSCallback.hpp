@@ -2,6 +2,7 @@
 #define DDS_CALLBACK_H 
 
 #include <DDSVar.hpp>
+#include <iostream>
 
 class DDSCallback
 {
@@ -22,10 +23,17 @@ public:
 		if(trig_type) 
 		{
 			var->write(value_true); 
+
+#ifdef DEBUG
+			std::cout << "Write value: " << value_true << std::endl; 
+#endif 
 		}
 		else
 		{
 			var->write(value_false); 
+#ifdef DEBUG
+			std::cout << "Write value: " << value_false << std::endl; 
+#endif
 		}
 	}
 
