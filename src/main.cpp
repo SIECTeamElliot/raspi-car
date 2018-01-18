@@ -70,7 +70,11 @@ int main()
 		sleep(1);
 	}
 #else 
-	while(true);
+	while(true)
+	{
+		dds.print();
+		sleep(1);
+	}
 #endif
 #endif
 	return 0; 
