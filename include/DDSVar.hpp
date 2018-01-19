@@ -17,13 +17,14 @@ private:
 	std::shared_ptr<T> value; 
 	std::mutex mx; 
 
-	friend class DDSCan; 
-
 	void (*onWrite)(const T&);
+	
+	friend class DDSCan; 
 
 public:
 	DDSVar() : 
 		value( new T ), 
+		mx(), 
 		onWrite(nullptr)
 	{}
 

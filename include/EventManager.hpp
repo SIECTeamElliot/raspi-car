@@ -10,6 +10,7 @@
 
 #include <DDSCan.h>
 #include <DDSCallback.hpp>
+#include <Config.h>
 
 class Event
 {
@@ -116,10 +117,38 @@ public:
 		dds(dds)
 	{
 		listenThread = new std::thread(&EventManager::refreshEvents, this); 
-		eventList.push_back(new Event("up", new DDSCallback(&dds.motorSpeed, 127, 254)));
-		eventList.push_back(new Event("down", new DDSCallback(&dds.motorSpeed, 127, 0)));
-		eventList.push_back(new Event("left", new DDSCallback(&dds.steeringPosFromLeft, 112, 138)));
-		eventList.push_back(new Event("right", new DDSCallback(&dds.steeringPosFromLeft, 112, 88)));
+		eventList.push_back(new Event("up",
+			new DDSCallback(
+				&dds.motorSpeed, 
+				Config::event_values::motor_speed::neutral, 
+				Config::event_values::motor_speed::forwardMax
+				)
+			));
+		
+		eventList.push_back(new Event("down", 
+			new DDSCallback(
+				&dds.motorSpeed, 
+				Config::event_values::motor_speed::neutral, 
+				Config::event_values::motor_speed::backwardMax
+				)
+			));
+
+		eventList.push_back(new Event("left", 
+			new DDSCallback(
+				&dds.steeringPosFromLeft, 
+				Config::event_values::steering_pos::neutral, 
+				Config::event_values::steering_pos::left
+				)
+			));
+
+		eventList.push_back(new Event("right", 
+			new DDSCallback(
+				&dds.steeringPosFromLeft, 
+				Config::event_values::steering_pos::neutral,
+				Config::event_values::steering_pos::right
+				)
+			));
+
 		eventList.push_back(new Event("stop"));
 		eventList.push_back(new Event("yesPark"));
 		eventList.push_back(new Event("noPark"));

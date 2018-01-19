@@ -4,6 +4,7 @@
 #include "../include/communicationSTM.h"
 #include <iostream>
 #include <EventManager.hpp>
+#include <AlertManager.hpp>
 
 // void print(int nbBytes, unsigned char * bytes) 
 // {
@@ -16,6 +17,7 @@
 
 DDSCan dds;
 EventManager ev("../../communication_file.txt", dds); 
+AlertManager am("../../lecture.txt", 1000); 
 
 char toSpeed(float val) 
 {
@@ -39,8 +41,7 @@ int main()
 //	iface.startListening();
 //	while(1){
 //		Tests(iface);
-//	};
-
+//	};	
 
 #ifdef ROLL
 	while(true) 
@@ -62,6 +63,7 @@ int main()
 		}
 	}
 #else 
+
 #ifdef PARK
 	while( dds.parkFinished.read() == 0 )
 	{
@@ -70,12 +72,33 @@ int main()
 		sleep(1);
 	}
 #else 
+	int state = 0; 
 	while(true)
 	{
+		if(state == 0)
+		{
+			am.alert(AlertManager::obstacle);
+			am.alert(AlertManager::obstacle);
+			am.alert(AlertManager::obstacle);
+			am.alert(AlertManager::obstacle);
+			am.alert(AlertManager::obstacle);
+			state++; 
+		} 
+		else if (state == 1) 
+		{
+			am.alert(AlertManager::erreur); 
+			state++; 
+		} 
+		else if (state == 2)
+		{
+			am.alert(AlertManager::place_parking); 
+			state = 0; 
+		} 
 		dds.print();
 		sleep(1);
 	}
 #endif
+
 #endif
 	return 0; 
 }

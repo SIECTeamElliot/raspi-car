@@ -6,6 +6,22 @@
 
 namespace Config
 {
+	namespace event_values
+	{
+		namespace motor_speed
+		{
+			static const uint8_t forwardMax = 254; 
+			static const uint8_t neutral = 127; 
+			static const uint8_t backwardMax = 0;
+		}
+
+		namespace steering_pos
+		{
+			static const uint8_t left = 138; 
+			static const uint8_t neutral = 112; 
+			static const uint8_t right = 88;
+		}
+	}
 
 	namespace IDs
 	{

@@ -4,8 +4,8 @@
 
 // Construct a CAN object - must be call once 
 Can::Can() : 
-		enable(false), 
-		canSckt(new int)
+		canSckt(new int),
+		enable(false)
 {
 	idFilters = new unsigned int[1]; 
 	idFilters[0] = (unsigned int) 0x100;
@@ -14,8 +14,8 @@ Can::Can() :
 }
 
 Can::Can(const int p_nbFilters, const unsigned int * p_idFilters) : 
-		enable(false), 
 		canSckt(new int), 
+		enable(false), 
 		nbFilters(p_nbFilters),
 		idFilters(new unsigned int[nbFilters])
 {
@@ -139,7 +139,7 @@ void Can::listenTask()
     }
 
     // Checking that the frame received is complete 
-    if (nbytes < sizeof(struct can_frame)){
+    if ((uint8_t) nbytes < sizeof(struct can_frame)){
       std::cerr << "[Listen] read: incomplete CAN frame" << std::endl;
     }
 
