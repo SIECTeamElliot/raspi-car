@@ -26,17 +26,23 @@ int main()
 			sleep(2);
 			dds.motorSpeed.write(70);
 			usleep(3400000);
+			dds.motorSpeed.write(0);
+			sleep(2);
 
 			dds.steeringPosFromLeft.write(138);
 			sleep(2);
 			dds.motorSpeed.write(190);
 			usleep(3000000);
+			dds.motorSpeed.write(0);
+			sleep(2);
 
 			dds.steeringPosFromLeft.write(88);
 			sleep(2);
 			dds.motorSpeed.write(70);
 			usleep(3000000);
-
+			dds.motorSpeed.write(0);
+			sleep(2);			
+			
 			dds.steeringPosFromLeft.write(112);
 			sleep(2);
 			dds.motorSpeed.write(70);
