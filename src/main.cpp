@@ -19,86 +19,65 @@ DDSCan dds;
 EventManager ev("../../communication_file.txt", dds); 
 AlertManager am("../../lecture.txt", 1000); 
 
-char toSpeed(float val) 
-{
-	char conv; 
-	if(val >= 0) 
-	{
-		conv = (char) 128 * val; 
-	}
-	else 
-	{
-		conv = (char) (255 + (val * 128));
-	}
-
-	return conv;
-}
 
 int main() 
 {
+			dds.steeringPosFromLeft.write(88);
+			sleep(2);
+			dds.motorSpeed.write(70);
+			usleep(3400000);
 
-//	Can iface; 
-//	iface.startListening();
-//	while(1){
-//		Tests(iface);
-//	};	
+			dds.steeringPosFromLeft.write(138);
+			sleep(2);
+			dds.motorSpeed.write(190);
+			usleep(3000000);
 
-#ifdef ROLL
-	while(true) 
+			dds.steeringPosFromLeft.write(88);
+			sleep(2);
+			dds.motorSpeed.write(70);
+			usleep(3000000);
+
+			dds.steeringPosFromLeft.write(112);
+			sleep(2);
+			dds.motorSpeed.write(70);
+			usleep(3200000);
+			dds.motorSpeed.write(0);
+/*	while(true) 
 	{
 
- 		if(dds.frontUS.left.read() > 2000 || dds.frontUS.right.read() > 2000 || dds.frontUS.center.read() > 2000)
-		{
-			dds.motorSpeed.write(255);
-			dds.steeringPosFromLeft.write(112);
-			dds.print();
-			sleep(1);
-		}
-		else 
+ 		if(dds.frontUS.left.read() < 20 || dds.frontUS.right.read() < 20 || dds.frontUS.center.read() < 20)
 		{
 			dds.motorSpeed.write(127);
 			dds.steeringPosFromLeft.write(112);
 			dds.print();
 			sleep(1);
 		}
-	}
-#else 
 
-#ifdef PARK
-	while( dds.parkFinished.read() == 0 )
-	{
-		dds.parkOrder.write(1)	; 
-		dds.print(); 
-		sleep(1);
-	}
-#else 
-	int state = 0; 
-	while(true)
-	{
-		if(state == 0)
+		else if
 		{
-			am.alert(AlertManager::obstacle);
-			am.alert(AlertManager::obstacle);
-			am.alert(AlertManager::obstacle);
-			am.alert(AlertManager::obstacle);
-			am.alert(AlertManager::obstacle);
-			state++; 
-		} 
-		else if (state == 1) 
-		{
-			am.alert(AlertManager::erreur); 
-			state++; 
-		} 
-		else if (state == 2)
-		{
-			am.alert(AlertManager::place_parking); 
-			state = 0; 
-		} 
-		dds.print();
-		sleep(1);
-	}
-#endif
+			//add manoeuvre
+			dds.steeringPosFromLeft.write(88);
+			sleep(2);
+			dds.motorSpeed.write(70);
+			usleep(3400000);
 
-#endif
-	return 0; 
+			dds.steeringPosFromLeft.write(138);
+			sleep(2);
+			dds.motorSpeed.write(190);
+			usleep(3000000);
+
+			dds.steeringPosFromLeft.write(88);
+			sleep(2);
+			dds.motorSpeed.write(70);
+			usleep(3000000);
+
+			dds.steeringPosFromLeft.write(112);
+			sleep(2);
+			dds.motorSpeed.write(70);
+			usleep(3200000);
+			dds.motorSpeed.write(0);
+	
+		}
+
+	}*/
 }
