@@ -62,6 +62,7 @@ int main()
 		}
 	}
 #else 
+
 #ifdef PARK
 	while( dds.parkFinished.read() == 0 )
 	{
@@ -73,9 +74,10 @@ int main()
 	while(true)
 	{
 		dds.print();
-		sleep(1);
+		usleep(100);
 	}
 #endif
+
 #endif
 	return 0; 
 }
