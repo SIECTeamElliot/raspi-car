@@ -60,11 +60,5 @@ int main()
 			sleep(1);
 		}
 
-		else if
-		{
-			//add manoeuvre
-	
-		}
-
 	}
 }
