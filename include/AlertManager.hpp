@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <unordered_map>
+#include <boost/unordered_map.hpp>
 #include <chrono> 
 
 class AlertManager
@@ -21,7 +21,7 @@ private:
 	std::string _filename; 
 	size_t _timeout_ms; 
 	std::chrono::high_resolution_clock::time_point _lastClearDate; 
-	std::unordered_map<AlertType_t, std::string> _mapAlertText; 
+	boost::unordered_map<AlertType_t, std::string> _mapAlertText; 
 
 public: 
 	AlertManager(std::string filename, size_t timeout_ms) : 
