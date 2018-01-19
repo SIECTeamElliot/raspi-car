@@ -19,7 +19,8 @@ using namespace std;
 
 tuple<double, double, double> linReg(vector<int> & vect, int width, int height);
 
-
+// TODO : thread to consume frames
+// TODO : down section
 
 void LineFinder::init() {
 
