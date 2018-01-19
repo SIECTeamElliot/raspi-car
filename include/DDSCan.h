@@ -37,9 +37,15 @@ public:
 
 	struct US_struct 
 	{
-			DDSVar<RO> left; 
-			DDSVar<RO> center; 
-			DDSVar<RO> right; 
+		US_struct() : 
+			left(), 
+			center(), 
+			right()
+		{} 
+		
+		DDSVar<RO> left; 
+		DDSVar<RO> center; 
+		DDSVar<RO> right; 
 	};
 
 	// ID 0x100

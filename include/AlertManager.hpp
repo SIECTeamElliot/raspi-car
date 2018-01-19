@@ -42,7 +42,7 @@ public:
 		auto duration = std::chrono::high_resolution_clock::now() - _lastClearDate; 	
 		std::ofstream file; 
 
-		if(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() > _timeout_ms)
+		if(((size_t) std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()) > _timeout_ms)
 		{
 			file.open(_filename, std::ofstream::out | std::ofstream::trunc);
 			_lastClearDate = std::chrono::high_resolution_clock::now(); 

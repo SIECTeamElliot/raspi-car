@@ -8,7 +8,7 @@ class DDSCallback
 {
 private: 
 	DDSVar<RW, uint32_t > * var; 
-	uint32_t  value_false, value_true; 
+	uint32_t  value_true, value_false; 
 
 public: 
 	DDSCallback(DDSVar<RW, uint32_t > * v, uint32_t  value_false, uint32_t  value_true) : 

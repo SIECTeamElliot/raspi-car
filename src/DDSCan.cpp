@@ -5,9 +5,17 @@ Can DDSCan::canBus(Config::IDs::nbFilters, Config::IDs::filters);
 
 
 DDSCan::DDSCan() : 
+	rightMotorSpeed(), 
+	leftMotorSpeed(), 
+	parkOrder(&DDSCan::sendUpdate<Config::IDs::emission::parkOrder>),
 	motorSpeed(&DDSCan::sendUpdate<Config::IDs::emission::motorSpeed>), 
+	frontUS(), 
+	rearUS(), 
+	wheelSensorLeft(), 
+	wheelSensorRight(), 
 	steeringPosFromLeft(&DDSCan::sendUpdate<Config::IDs::emission::steeringPosFromLeft>), 
-	parkOrder(&DDSCan::sendUpdate<Config::IDs::emission::parkOrder>)
+	battery(), 
+	parkFinished()
 {
 #ifdef DEBUG
 	std::cout << "Init. DDSCan" << std::endl;
