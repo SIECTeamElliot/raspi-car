@@ -37,9 +37,9 @@ char toSpeed(float val)
 	return conv;
 }
 
-int main() 
+int main_vivien() 
 {
-
+	
     signal(SIGINT, intHandler);
     cout << "begin" << endl;
     LineFinder *lf = new LineFinder();
@@ -82,6 +82,11 @@ int main()
     lf->stop();
     t1.join();
     cout << "ending" << endl;
+}
+
+int main() 
+{
+
 
 //	Can iface; 
 //	iface.startListening();
