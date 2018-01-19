@@ -39,7 +39,7 @@ int main()
 			dds.steeringPosFromLeft.write(88);
 			sleep(2);
 			dds.motorSpeed.write(70);
-			usleep(3000000);
+			usleep(3200000);
 			dds.motorSpeed.write(127);
 			sleep(2);			
 
