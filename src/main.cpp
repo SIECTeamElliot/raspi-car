@@ -4,17 +4,12 @@
 #include "../include/communicationSTM.h"
 #include "../include/lineFinder.h"
 #include <iostream>
+#include <stdio.h>
 
-// void print(int nbBytes, unsigned char * bytes) 
-// {
-// 	for(int i = 0; i < nbBytes; i++) 
-// 	{
-// 		std::cout << bytes[i]; 
-// 	}
-// 	std::cout << std::endl;
-// }
+using namespace std;
 
 DDSCan dds;
+
 
 char toSpeed(float val) 
 {
@@ -34,44 +29,41 @@ char toSpeed(float val)
 int main() 
 {
 
-//	Can iface; 
-//	iface.startListening();
-//	while(1){
-//		Tests(iface);
-//	};
+    cout << "begin" << endl;
     LineFinder *lf = new LineFinder();
     thread t1 = lf->run();
-    int i = 0;
-    while (i < 1000) {
+    
+    cout << "motor start" << endl;
+    dds.motorSpeed.write(200);
+
+	for (int i = 0; i < 200; i++)
+	{
         tuple<double, double, double> result = lf->getLastResult();
         double command = lf->getLastCommand();
-        cout << "offset: " << get<0>(result) << ", \tangle: " << get<1>(result) <<  ", \tcommand " << command<<endl;
-        i++;
-        //waitKey(100);
-        this_thread::sleep_for(chrono::milliseconds(100));
-    }
+        cout << "offset: " << get<0>(result) << ", \tangle: " << get<1>(result) << ", \tR: " << get<2>(result) <<  ", \tcommand " << command<<endl;
+
+//        if (command < -0.5)
+//		{
+//			dds.steeringPosFromLeft.write(138);
+//			dds.print();
+//		}
+//		else if (command > 0.5) 
+//		{
+//			dds.steeringPosFromLeft.write(88);
+//			dds.print();
+//		}
+//		else 
+//		{
+//			dds.steeringPosFromLeft.write(112);
+//			dds.print();
+//		}
+//       // this_thread::sleep_for(chrono::milliseconds(100));
+       waitKey(100);
+        
+	}
     cout << "stopping" << endl;
     lf->stop();
     t1.join();
     cout << "ending" << endl;
-    
-	while(true) 
-	{
-
- 		if(dds.frontUS.left.read() > 2000 || dds.frontUS.right.read() > 2000 || dds.frontUS.center.read() > 2000)
-		{
-			dds.motorSpeed.write(255);
-			dds.steeringPosFromLeft.write(112);
-			dds.print();
-			sleep(1);
-		}
-		else 
-		{
-			dds.motorSpeed.write(127);
-			dds.steeringPosFromLeft.write(112);
-			dds.print();
-			sleep(1);
-		}
-	}
 	return 0; 
 }

@@ -14,7 +14,7 @@ using namespace cv;
 using namespace std;
 #define ISRASPBERRY 0
 #define DOWN_SECTION 1.0
-#define DISPLAY_ON	0
+#define DISPLAY_ON	1
 
 
 tuple<double, double, double> linReg(vector<int> & vect, int width, int height);
@@ -151,7 +151,8 @@ void LineFinder::_run() {
 		putText(srcI, s, textOrigin, CV_FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255, 255, 255));
 
 		imshow("source", srcI);
-
+        waitKey(1);
+        
 #endif // (DISPLAY_ON == 1)
 
 		double command =  angle_d / 45.0;
@@ -196,11 +197,12 @@ tuple<double, double, double> LineFinder::getLastResult() {
 // Returns a pair conataining the slope and offset of the line
 // the data are raw : they are based directly on pixel coordinates
 tuple<double, double, double> linReg(vector<int> & vect, int width, int height){
-	int n = 0;
+	unsigned int n = 0;
+	unsigned int i = 0;
 	double a, b;
 	double xsum = 0, x2sum = 0, ysum = 0, xysum = 0;		//variables for sums/sigma of xi,yi,xi^2,xiyi etc
 
-	for (int i = 0; i < vect.size(); i++)
+	for (i = 0; i < vect.size(); i++)
 	{
 		if (vect[i] > 0) {
 			xsum = xsum + (double)i;						//calculate sigma(xi)
@@ -210,32 +212,20 @@ tuple<double, double, double> linReg(vector<int> & vect, int width, int height){
 			n++;
 		}
 	}
-	double yavg = ysum / (double)n;
-	double SStot = 0;
-	double SSreg = 0;
+
 	a = (n*xysum - xsum*ysum) / (n*x2sum - xsum*xsum);		//calculate slope
 	b = (x2sum*ysum - xsum*xysum) / (x2sum*n - xsum*xsum);	//calculate intercept
 
 
 	// r calculation 
 	double R = 0;
-	for (int i = 0; i < vect.size(); i++)
+	for (i = 0; i < vect.size(); i++)
 	{
 		if (abs(vect[i] - (a*i + b)) < width / 10)
 			R++;
 	}
 	R = R / height;
-	/*
-	for (int i = 0; i < vect.size(); i++)
-	{
-		if (vect[i] > 0) {
-			SStot += pow((double)vect[i] - yavg, 2);
-			SSreg += pow((double)vect[i] - (a*i + b), 2);
-		}
-	}
-	//double R2 = 1 - (SSreg / SStot);
-	R = SSreg/n;
-	*/
+
 	return tuple<double, double, double>(a, b, R);
 }
 

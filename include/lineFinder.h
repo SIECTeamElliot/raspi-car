@@ -18,7 +18,6 @@ public :
 		init();
 	}
 
-	int counter;
 
 	void test() {
 		Mat srcFrame;
@@ -31,6 +30,10 @@ public :
 				break;
 		}
 	}
+
+    thread capture() {
+        return thread([this] { this->_capture(); });
+    }
 
 	thread run() {
 		return thread([this] { this->_run(); });
@@ -53,17 +56,19 @@ public :
 
 protected:
 	tuple<double, double, double> lastResult;
+	bool isRaspberry;
+	bool running;
 	double lastCommand;
 	int width;
 	int height;
 	int heightCropped;
+	int counter;
 	Rect subSize;
 	VideoCapture camera;
-	bool isRaspberry;
-	bool running;
+    Mat lastImage;
 	void init();
-	// TODO : split into pieces w/ attributes
 	void _run();
+    void _capture();
 	tuple<double, double, double> sampleList[5];
 
 	mutex mut_lastResult;
