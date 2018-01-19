@@ -5,9 +5,17 @@ Can DDSCan::canBus(Config::IDs::nbFilters, Config::IDs::filters);
 
 
 DDSCan::DDSCan() : 
+	rightMotorSpeed(), 
+	leftMotorSpeed(), 
+	parkOrder(&DDSCan::sendUpdate<Config::IDs::emission::parkOrder>),
 	motorSpeed(&DDSCan::sendUpdate<Config::IDs::emission::motorSpeed>), 
+	frontUS(), 
+	rearUS(), 
+	wheelSensorLeft(), 
+	wheelSensorRight(), 
 	steeringPosFromLeft(&DDSCan::sendUpdate<Config::IDs::emission::steeringPosFromLeft>), 
-	parkOrder(&DDSCan::sendUpdate<Config::IDs::emission::parkOrder>)
+	battery(), 
+	parkFinished()
 {
 #ifdef DEBUG
 	std::cout << "Init. DDSCan" << std::endl;
@@ -48,9 +56,9 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 			// 	assert(bytes[i] > Config::thresholds::frontUS::min);	
 			// }
 
-			dds.frontUS.left.update((bytes[0] << 8) + bytes[1]); 
-			dds.frontUS.center.update((bytes[2] << 8) + bytes[3]); 
-			dds.frontUS.right.update((bytes[4] << 8) + bytes[5]); 
+			dds.frontUS.left.update((bytes[1] << 8) + bytes[0]); 
+			dds.frontUS.center.update((bytes[3] << 8) + bytes[2]); 
+			dds.frontUS.right.update((bytes[5] << 8) + bytes[4]); 
 
 			break; 
 
@@ -63,9 +71,9 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 			// 	assert(bytes[i] > Config::thresholds::rearUS::min);	
 			// }
 
-			dds.rearUS.left.update((bytes[0] << 8) + bytes[1]); 
-			dds.rearUS.center.update((bytes[2] << 8) + bytes[3]); 
-			dds.rearUS.right.update((bytes[4] << 8) + bytes[5]); 
+			dds.rearUS.left.update((bytes[1] << 8) + bytes[0]); 
+			dds.rearUS.center.update((bytes[3] << 8) + bytes[2]); 
+			dds.rearUS.right.update((bytes[5] << 8) + bytes[4]); 
 
 			break; 
 
@@ -101,12 +109,18 @@ void DDSCan::print()
 	std::cout << "rightMotorSpeed : " << rightMotorSpeed.read() << std::endl;
 	std::cout << "leftMotorSpeed : " << leftMotorSpeed.read() << std::endl;
 	std::cout << "motorSpeed : " << motorSpeed.read() << std::endl;
+	
+	std::cout << std::hex; 
+
 	std::cout << "frontUS.left : " << frontUS.left.read() << std::endl;
 	std::cout << "frontUS.center : " << frontUS.center.read() << std::endl;
 	std::cout << "frontUS.right : " << frontUS.right.read() << std::endl;
 	std::cout << "rearUS.left : " << rearUS.left.read() << std::endl;
 	std::cout << "rearUS.center : " << rearUS.center.read() << std::endl;
 	std::cout << "rearUS.right : " << rearUS.right.read() << std::endl;
+
+	std::cout << std::dec; 
+	
 	std::cout << "wheelSensorLeft : " << wheelSensorLeft.read() << std::endl;
 	std::cout << "wheelSensorRight : " << wheelSensorRight.read() << std::endl;
 	std::cout << "steeringPosFromLeft : " << steeringPosFromLeft.read() << std::endl;

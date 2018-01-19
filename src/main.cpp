@@ -6,11 +6,16 @@
 #include <iostream>
 #include <stdio.h>
 #include <signal.h>
+#include <EventManager.hpp>
+#include <AlertManager.hpp>
 
 
 using namespace std;
 
 DDSCan dds;
+EventManager ev("../../communication_file.txt", dds); 
+AlertManager am("../../lecture.txt", 1000); 
+
 static volatile int keepRunning = 1;
 
 void intHandler(int dummy){
@@ -77,5 +82,52 @@ int main()
     lf->stop();
     t1.join();
     cout << "ending" << endl;
+
+//	Can iface; 
+//	iface.startListening();
+//	while(1){
+//		Tests(iface);
+//	};	
+
+#ifdef ROLL
+	while(true) 
+#else 
+
+#ifdef PARK
+	while( dds.parkFinished.read() == 0 )
+	{
+		dds.parkOrder.write(1)	; 
+		dds.print(); 
+		sleep(1);
+	}
+#else 
+	int state = 0; 
+	while(true)
+	{
+		if(state == 0)
+		{
+			am.alert(AlertManager::obstacle);
+			am.alert(AlertManager::obstacle);
+			am.alert(AlertManager::obstacle);
+			am.alert(AlertManager::obstacle);
+			am.alert(AlertManager::obstacle);
+			state++; 
+		} 
+		else if (state == 1) 
+		{
+			am.alert(AlertManager::erreur); 
+			state++; 
+		} 
+		else if (state == 2)
+		{
+			am.alert(AlertManager::place_parking); 
+			state = 0; 
+		} 
+		dds.print();
+		sleep(1);
+	}
+#endif
+
+#endif
 	return 0; 
 }

@@ -10,6 +10,10 @@ add_definitions("$(pkg-config --libs --cflags opencv) ")
 
 find_package( OpenCV REQUIRED )
 
+find_package(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIR})
+link_directories(${Boost_LIBRARY_DIR})
+
 set(EXECUTABLE_OUTPUT_PATH bin)
 include_directories(include)
 file(GLOB SOURCES src/*.cpp)
@@ -17,3 +21,4 @@ file(GLOB SOURCES src/*.cpp)
 add_executable(exec ${SOURCES})
 target_link_libraries(exec pthread)
 target_link_libraries(exec ${OpenCV_LIBS} )
+target_link_libraries( exec ${Boost_LIBRARIES} )
