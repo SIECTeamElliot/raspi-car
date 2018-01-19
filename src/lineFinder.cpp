@@ -14,7 +14,7 @@ using namespace cv;
 using namespace std;
 #define ISRASPBERRY 0
 #define DOWN_SECTION 1.0
-#define DISPLAY_ON	1
+#define DISPLAY_ON	0
 
 
 tuple<double, double, double> linReg(vector<int> & vect, int width, int height);
@@ -24,7 +24,7 @@ tuple<double, double, double> linReg(vector<int> & vect, int width, int height);
 void LineFinder::init() {
 
 	// camera detection
-	camera.open(1); 
+	camera.open(1);
 	if (!camera.isOpened()) {
 		cout << "cannot oppen windows camera : must be raspberry" << endl;
 		isRaspberry = true;
@@ -40,7 +40,7 @@ void LineFinder::init() {
 	width = srcI.size().width;
 	heightCropped = int(height * DOWN_SECTION);
 	subSize = Rect(0, height - heightCropped, width, heightCropped - 1);
-    running = false;
+	running = false;
 }
 
 void LineFinder::_run() {
@@ -151,16 +151,22 @@ void LineFinder::_run() {
 		putText(srcI, s, textOrigin, CV_FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255, 255, 255));
 
 		imshow("source", srcI);
-        waitKey(1);
-        
+		waitKey(1);
+
 #endif // (DISPLAY_ON == 1)
 
-		double command =  angle_d / 45.0;
-		if (command <-1) command =-1;
-		if (command >1) command =1;
-		command += origin_d;
-		if (command <-1) command =-1;
-		if (command >1) command =1;
+		//double command = angle_d / 45.0;
+		//if (command <-1) command = -1;
+		//if (command >1) command = 1;
+		//command += origin_d;
+		//if (command <-1) command = -1;
+		//if (command >1) command = 1;
+		double command = 0;
+		if (angle_d < -20.0)	command--;
+		if (angle_d > 20.0)		command++;
+		if (origin_d < -0.3)	command--;
+		if (origin_d > 0.3)		command++;
+
 
 
 
@@ -171,7 +177,7 @@ void LineFinder::_run() {
 
 
 		/*if (waitKey(1) == 27)
-			break;*/
+		break;*/
 	}
 	cout << "stopped" << endl;
 	camera.release();
@@ -196,7 +202,7 @@ tuple<double, double, double> LineFinder::getLastResult() {
 // Compute the linear regression fit of the given vector
 // Returns a pair conataining the slope and offset of the line
 // the data are raw : they are based directly on pixel coordinates
-tuple<double, double, double> linReg(vector<int> & vect, int width, int height){
+tuple<double, double, double> linReg(vector<int> & vect, int width, int height) {
 	unsigned int n = 0;
 	unsigned int i = 0;
 	double a, b;
@@ -217,7 +223,7 @@ tuple<double, double, double> linReg(vector<int> & vect, int width, int height){
 	b = (x2sum*ysum - xsum*xysum) / (x2sum*n - xsum*xsum);	//calculate intercept
 
 
-	// r calculation 
+															// r calculation 
 	double R = 0;
 	for (i = 0; i < vect.size(); i++)
 	{
@@ -229,114 +235,3 @@ tuple<double, double, double> linReg(vector<int> & vect, int width, int height){
 	return tuple<double, double, double>(a, b, R);
 }
 
-/*
-tuple<double, double, double> findLine(Mat img) {
-
-	Mat trimI, bluredI, csvI, threshI, maxI;
-
-	// Trimming to extract the lower part of the image
-	int height = img.size().height;
-	int width = img.size().width;
-	Rect subSize(0, (1.0 - DOWN_SECTION) * height, width, height * DOWN_SECTION - 1);
-	trimI = img(subSize);
-
-	// gaussian blur to smooth out noise
-	GaussianBlur(trimI, bluredI, Size(9, 9), 0, 0);
-
-	// convert to HSV color space
-	cvtColor(bluredI, csvI, CV_BGR2HSV);
-
-	// threshold for a color
-	inRange(csvI, cv::Scalar(0, 0, 150), cv::Scalar(255, 63, 255), threshI);
-
-	//decrease the contrast
-	threshI.convertTo(threshI, -1, 1.0 / 255.0, 0);
-
-	// kernel definition : used to blur the image along a single line 
-	Point anchor(-1, -1);
-	double delta = 0;
-	int ddepth = -1;
-	int kernel_size = (width / 8) * 2 + 1; // ensures odd number
-	Mat kernel = getGaussianKernel(kernel_size, -1); // TODO : pyramid shaped objects
-	kernel.convertTo(kernel, -1, 50, 0);
-	transpose(kernel, kernel);
-
-	// personalized gaussian filter
-	filter2D(threshI, maxI, ddepth, kernel, anchor, delta, BORDER_DEFAULT);
-
-	// Maximum detection for each line 
-	CV_Assert(maxI.depth() == CV_8U);// accept only char type matrices
-	int channels = maxI.channels();
-	int nRows = maxI.rows;
-	int nCols = maxI.cols * channels;
-	int row, col;
-	uchar* p;
-	vector<int> maximums(trimI.rows, 0);
-	for (row = 0; row < nRows; ++row)
-	{
-		maximums[row] = -1;
-		uchar maxValue = 25;
-		p = maxI.ptr<uchar>(row);
-		for (col = 0; col < nCols; ++col)
-		{
-			if (maxValue < p[col]) {
-				maxValue = p[col];
-				maximums[row] = col;
-			}
-		}
-	}
-
-	// linear regression
-	tuple <double, double, double> coefs = linReg(maximums);
-	Point pt1(get<1>(coefs), 0);
-	int origin = nRows* get<0>(coefs) + get<1>(coefs);
-	Point pt2(origin, nRows);
-	double angle = atan(get<0>(coefs));
-
-	// display line
-	//cout << "coefs : " << coefs.first << ", " << coefs.second << endl;
-	//line(bluredI, pt1, pt2, Scalar(255, 0, 0));
-	Point offset(0, (1.0 - DOWN_SECTION) * height);
-	line(img, pt1 + offset, pt2 + offset, Scalar(255, 0, 0), 2);
-
-	// display text
-	double origin_d = 2.0 * (double(origin) - double(width) / 2) / double(width);
-	double angle_d = -180.0 * angle / 3.14159;
-	int direction = 0;
-	if (origin_d > 0.2)
-		direction++;
-	else if (origin_d < -0.2)
-		direction--;
-	if (angle_d > 10.0)
-		direction++;
-	else if (angle_d < -10.0)
-		direction--;
-
-#if (DISPLAY_ON == 1)
-	Point textOrigin(10, 20);
-	if (direction == 0) {
-		putText(img, "Forward", textOrigin, CV_FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255, 0, 0));
-	}
-	else if (direction > 0) {
-		putText(img, "Turn Right", textOrigin, CV_FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0));
-	}
-	else {
-		putText(img, "Turn Left", textOrigin, CV_FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255));
-	}
-	textOrigin.x = 100;
-	stringstream stream;
-	stream << fixed << setprecision(2) << get<2>(coefs);
-	string s = stream.str();
-	putText(img, s, textOrigin, CV_FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255, 255, 255));
-
-	imshow("source", img);
-	//imshow("blur", bluredI);
-	//imshow("out", maxI);
-#endif // (DISPLAY_ON == 1)
-
-
-
-	return tuple<double, double, double>(origin_d, angle_d, get<2>(coefs));
-}
-
-*/

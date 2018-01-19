@@ -34,7 +34,7 @@ int main()
     thread t1 = lf->run();
     
     cout << "motor start" << endl;
-    dds.motorSpeed.write(200);
+//    dds.motorSpeed.write(200);
 
 	for (int i = 0; i < 200; i++)
 	{
@@ -42,23 +42,22 @@ int main()
         double command = lf->getLastCommand();
         cout << "offset: " << get<0>(result) << ", \tangle: " << get<1>(result) << ", \tR: " << get<2>(result) <<  ", \tcommand " << command<<endl;
 
-//        if (command < -0.5)
-//		{
-//			dds.steeringPosFromLeft.write(138);
-//			dds.print();
-//		}
-//		else if (command > 0.5) 
-//		{
-//			dds.steeringPosFromLeft.write(88);
-//			dds.print();
-//		}
-//		else 
-//		{
-//			dds.steeringPosFromLeft.write(112);
-//			dds.print();
-//		}
-//       // this_thread::sleep_for(chrono::milliseconds(100));
-       waitKey(100);
+        if (command < -0.5)
+		{
+			dds.steeringPosFromLeft.write(138);
+			dds.print();
+		}
+		else if (command > 0.5) 
+		{
+			dds.steeringPosFromLeft.write(88);
+			dds.print();
+		}
+		else 
+		{
+			dds.steeringPosFromLeft.write(112);
+			dds.print();
+		}
+        this_thread::sleep_for(chrono::milliseconds(100));
         
 	}
     cout << "stopping" << endl;
