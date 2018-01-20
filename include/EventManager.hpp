@@ -6,6 +6,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <boost/algorithm/string.hpp>
+#include <boost/unordered_map.hpp>
 #include <vector>
 
 #include <DDSCan.h>
@@ -21,7 +22,11 @@ private:
 
 	bool value; 
 	std::string eventName; 
-	DDSCallback * callback; 
+	
+	DDSCallback * ddscallback; 
+	void (*callback)(bool); 
+
+
 	bool inhibited; 
 
 	void inhibit() 
@@ -36,18 +41,28 @@ private:
 
 public: 
 	Event(std::string eventName, DDSCallback * cb = nullptr) : 
-		eventName(eventName)
+		eventName(eventName), 
+		callback(nullptr)
 	{
-		callback = cb; 
+		ddscallback = cb; 
 	}
 
 	~Event()
 	{}
 
+	void addCallback(void (*cb)(bool))
+	{
+		callback = cb; 
+	}
+
 	void trig_on()
 	{
 		value = true;
-		if(callback != nullptr && !inhibited)
+		if(ddscallback != nullptr && !inhibited)
+		{
+			(*ddscallback)(value); 
+		}
+		else if(callback != nullptr && !inhibited)
 		{
 			(*callback)(value); 
 		}
@@ -60,7 +75,11 @@ public:
 	void trig_off()
 	{
 		value = false; 
-		if(callback != nullptr && !inhibited)
+		if(ddscallback != nullptr && !inhibited)
+		{
+			(*ddscallback)(value); 
+		}
+		else if(callback != nullptr && !inhibited)
 		{
 			(*callback)(value); 
 		}
@@ -91,7 +110,7 @@ void print( std::vector <std::string> & v )
 class EventManager
 {
 private: 
-	std::vector<Event *> eventList; 
+	boost::unordered_map<std::string, Event *> eventStrMap;
 	std::thread * listenThread; 
 	std::string filename;
 	const std::string delimiter;
@@ -140,15 +159,16 @@ public:
 		dds(dds)
 	{
 		listenThread = new std::thread(&EventManager::refreshEvents, this); 
-		eventList.push_back(new Event("up",
+
+		eventStrMap.emplace("up", new Event("up",
 			new DDSCallback(
 				&dds.motorSpeed, 
 				Config::event_values::motor_speed::neutral, 
 				Config::event_values::motor_speed::forwardMax
 				)
-			));
-		
-		eventList.push_back(new Event("down", 
+			)); 
+
+		eventStrMap.emplace("down", new Event("down", 
 			new DDSCallback(
 				&dds.motorSpeed, 
 				Config::event_values::motor_speed::neutral, 
@@ -156,7 +176,7 @@ public:
 				)
 			));
 
-		eventList.push_back(new Event("left", 
+		eventStrMap.emplace("left", new Event("left", 
 			new DDSCallback(
 				&dds.steeringPosFromLeft, 
 				Config::event_values::steering_pos::neutral, 
@@ -164,7 +184,7 @@ public:
 				)
 			));
 
-		eventList.push_back(new Event("right", 
+		eventStrMap.emplace("right", new Event("right", 
 			new DDSCallback(
 				&dds.steeringPosFromLeft, 
 				Config::event_values::steering_pos::neutral,
@@ -172,20 +192,30 @@ public:
 				)
 			));
 
-		eventList.push_back(new Event("stop"));
-		eventList.push_back(new Event("yesPark"));
-		eventList.push_back(new Event("noPark"));
-		eventList.push_back(new Event("autonomous"));
-		eventList.push_back(new Event("manual"));
+		eventStrMap.emplace("stop", new Event("stop"));
+		eventStrMap.emplace("yesPark", new Event("yesPark"));
+		eventStrMap.emplace("noPark", new Event("noPark"));
+		eventStrMap.emplace("autonomous", new Event("autonomous"));
+		eventStrMap.emplace("manual", new Event("manual"));
+
 	}
 
 	~EventManager()
 	{
 		delete listenThread; 
-		for(auto it = eventList.begin(); it != eventList.end(); ++it) 
+		for(auto it = eventStrMap.begin(); it != eventStrMap.end(); ++it) 
 		{
-			delete *it; 
+			delete it->second; 
 		}
+	}
+
+	void eventAddCallback(std::string eventName, void (*callback)(bool))
+	{
+		auto it = eventStrMap.find(eventName);
+    	if( it != eventStrMap.end())
+    	{
+    		it->second->addCallback(callback);
+    	}
 	}
 
 	void refreshEvents()
@@ -203,22 +233,18 @@ public:
 
 	        	// std::cout << tokens.size(); 
 	        	// print(tokens);
-
-	        	for( auto it = this->eventList.begin(); it != this->eventList.end(); ++it )
+	        	auto it = eventStrMap.find(tokens[0]);
+	        	if( it != eventStrMap.end())
 	        	{
-	        		if(**it == tokens[0])
-	        		{
-	        			if(tokens[1] == keyword_on) 
-	        			{
-	        				(*it)->trig_on(); 
-	        			}
-	        			else if(tokens[1] == keyword_off)
-	        			{
-	        				(*it)->trig_off(); 
-	        			}
-	        			break; 
-	        		}
-	        	}
+	        		if(tokens[1] == keyword_on) 
+        			{
+        				it->second->trig_on(); 
+        			}
+        			else if(tokens[1] == keyword_off)
+        			{
+        				it->second->trig_off(); 
+        			}
+	        	} 
 	        }
 	        prev = tmp; 
 
@@ -228,24 +254,18 @@ public:
 
 	void stopTeleop() 
 	{
-		for( auto it = this->eventList.begin(); it != this->eventList.end(); ++it )
-	    {
-	    	if(**it == "up" || **it  == "down" || **it == "left" || **it == "right")
-	    	{
-	    		(*it)->inhibit(); 
-	    	}
-	    }
+    	eventStrMap["up"]->inhibit(); 
+    	eventStrMap["down"]->inhibit(); 
+    	eventStrMap["left"]->inhibit(); 
+    	eventStrMap["right"]->inhibit(); 
 	}
 
 	void startTeleop() 
 	{
-		for( auto it = this->eventList.begin(); it != this->eventList.end(); ++it )
-	    {
-	    	if(**it == "up" || **it  == "down" || **it == "left" || **it == "right")
-	    	{
-	    		(*it)->uninhibit(); 
-	    	}
-	    }
+		eventStrMap["up"]->uninhibit(); 
+    	eventStrMap["down"]->uninhibit(); 
+    	eventStrMap["left"]->uninhibit(); 
+    	eventStrMap["right"]->uninhibit(); 
 	}
 
 };
