@@ -8,7 +8,6 @@
 #include <signal.h>
 #include <EventManager.hpp>
 #include <AlertManager.hpp>
-#include <StateMachine.hpp>
 
 
 using namespace std;
