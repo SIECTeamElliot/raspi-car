@@ -181,8 +181,6 @@ int main()
 				break;
 		}
 
-		std::cout << "Etat courant : " << etatCourant << std::endl;
-
 		// Execution des états
 		switch(etatCourant) 
 		{
@@ -190,6 +188,7 @@ int main()
 				ev.stopTeleop(); 
 				dds.motorSpeed.write(127); 
 				dds.steeringPosFromLeft.write(112); 
+				am.alert(AlertManager::obstacle);
 				break;
 
 			case RoulerManuel: 
@@ -198,7 +197,7 @@ int main()
 
 			case RoulerAutonome: 
 				ev.stopTeleop(); 
-				autonomousModeMain(); 
+				// autonomousModeMain(); 
 				break;
 
 			case Manoeuvre: 
@@ -206,6 +205,9 @@ int main()
 				parkingModeMain(); 
 				break;
 		}
+
+		std::cout << "Etat courant : " << etatCourant << std::endl;
+		usleep(20000);
 	}
 
 	return 0;
