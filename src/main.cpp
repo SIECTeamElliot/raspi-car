@@ -146,10 +146,10 @@ int main()
 				{
 					etatCourant = Stop; 
 				}
-				else if(ev.checkEvent("autonomous"))
-				{
-					etatCourant = RoulerAutonome; 
-				}
+				// else if(ev.checkEvent("autonomous") && !ev.checkEvent("manual"))
+				// {
+				// 	etatCourant = RoulerAutonome; 
+				// }
 				else if(ev.checkEvent("yesPark"))
 				{
 					etatCourant = Manoeuvre; 
@@ -161,10 +161,10 @@ int main()
 				{
 					etatCourant = Stop; 
 				}
-				else if(ev.checkEvent("manual"))
-				{
-					etatCourant = RoulerManuel; 
-				}
+				// else if(ev.checkEvent("manual"))
+				// {
+				// 	etatCourant = RoulerManuel; 
+				// }
 				else if(ev.checkEvent("yesPark"))
 				{
 					etatCourant = Manoeuvre; 
@@ -199,7 +199,7 @@ int main()
 
 			case RoulerAutonome: 
 				ev.stopTeleop(); 
-				autonomousModeMain(); 
+				// autonomousModeMain(); 
 				break;
 
 			case Manoeuvre: 
