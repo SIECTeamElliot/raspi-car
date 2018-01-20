@@ -44,13 +44,10 @@ int main()
 	{
 		dds.motorSpeed.write(180);
 
- 		if((dds.frontUS.left.read() < 40)  || (dds.frontUS.right.read() < 40) || (dds.frontUS.center.read() < 40))
+ 		if((dds.frontUS.center.read() < 40)  || (dds.frontUS.right.read() < 40) || (dds.frontUS.left.read() < 40))
 		{
 			dds.motorSpeed.write(127);
 			dds.steeringPosFromLeft.write(112);
-			dds.print();
-			sleep(1);
 		}		
-		dds.print();
 	}
 }
