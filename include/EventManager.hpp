@@ -77,7 +77,7 @@ public:
 
 	bool operator==(const char o[]) 
 	{
-		return eventName == std::string(o);
+		return eventName == o;
 	}
 };
 
