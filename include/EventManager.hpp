@@ -12,12 +12,27 @@
 #include <DDSCallback.hpp>
 #include <Config.h>
 
+class EventManager; 
+
 class Event
 {
-private: 
+private:
+	friend class EventManager; 
+
 	bool value; 
 	std::string eventName; 
 	DDSCallback * callback; 
+	bool inhibited; 
+
+	void inhibit() 
+	{
+		inhibited = true; 
+	}
+
+	void uninhibit() 
+	{
+		inhibited = false; 
+	}
 
 public: 
 	Event(std::string eventName, DDSCallback * cb = nullptr) : 
@@ -32,7 +47,7 @@ public:
 	void trig_on()
 	{
 		value = true;
-		if(callback != nullptr)
+		if(callback != nullptr && !inhibited)
 		{
 			(*callback)(value); 
 		}
@@ -45,7 +60,7 @@ public:
 	void trig_off()
 	{
 		value = false; 
-		if(callback != nullptr)
+		if(callback != nullptr && !inhibited)
 		{
 			(*callback)(value); 
 		}
@@ -58,6 +73,11 @@ public:
 	bool operator==(std::string& o) 
 	{
 		return eventName == o; 
+	}
+
+	bool operator==(const char o[]) 
+	{
+		return eventName == std::string(o);
 	}
 };
 
@@ -77,11 +97,13 @@ private:
 	const std::string delimiter;
 	const std::string keyword_on, keyword_off; 
 
+	bool stopped;
+
 	DDSCan & dds; 
 
 	std::string readLastLine()
 	{
-		std::ifstream read(this->filename, std::ios_base::ate );//open file
+		std::ifstream read(this->filename, std::ios_base::trunc | std::ios_base::ate );//open file
 	    int length = 0; 
 
 	    char c = '\0';
@@ -114,6 +136,7 @@ public:
 		delimiter(" "), 
 		keyword_on("on"), 
 		keyword_off("off"), 
+		stopped(false),
 		dds(dds)
 	{
 		listenThread = new std::thread(&EventManager::refreshEvents, this); 
@@ -200,6 +223,28 @@ public:
 	        prev = tmp; 
 
 	        usleep(5000);
+	    }
+	}
+
+	void stopTeleop() 
+	{
+		for( auto it = this->eventList.begin(); it != this->eventList.end(); ++it )
+	    {
+	    	if(**it == "up" || **it  == "down" || **it == "left" || **it == "right")
+	    	{
+	    		(*it)->inhibit(); 
+	    	}
+	    }
+	}
+
+	void startTeleop() 
+	{
+		for( auto it = this->eventList.begin(); it != this->eventList.end(); ++it )
+	    {
+	    	if(**it == "up" || **it  == "down" || **it == "left" || **it == "right")
+	    	{
+	    		(*it)->uninhibit(); 
+	    	}
 	    }
 	}
 

@@ -37,7 +37,7 @@ char toSpeed(float val)
 	return conv;
 }
 
-int main_vivien() 
+void main_vivien() 
 {
 	
     signal(SIGINT, intHandler);
