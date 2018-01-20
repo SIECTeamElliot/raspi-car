@@ -8,6 +8,7 @@
 #include <signal.h>
 #include <EventManager.hpp>
 #include <AlertManager.hpp>
+#include <StateMachine.hpp>
 
 
 using namespace std;
@@ -16,43 +17,30 @@ DDSCan dds;
 EventManager ev("../../communication_file.txt", dds); 
 AlertManager am("../../lecture.txt", 1000); 
 
+void manualModeMain() 
+{
+	ev.startTeleop();
+} 
+
 static volatile int keepRunning = 1;
 
 void intHandler(int dummy){
     keepRunning = 0;
 }
 
-char toSpeed(float val) 
+void autonomousModeMain() 
 {
-	char conv; 
-	if(val >= 0) 
-	{
-		conv = (char) 128 * val; 
-	}
-	else 
-	{
-		conv = (char) (255 + (val * 128));
-	}
-
-	return conv;
-}
-
-void main_vivien() 
-{
-	
     signal(SIGINT, intHandler);
-    cout << "begin" << endl;
     LineFinder *lf = new LineFinder();
     thread t1 = lf->run();
-    
-    cout << "motor start" << endl;
-    dds.motorSpeed.write(166);
 
-	for (int i = 0; i < 200; i++)
+	for(int i = 0; i < 200; ++i)
 	{
+		dds.motorSpeed.write(166);
+
         tuple<double, double, double> result = lf->getLastResult();
         double command = lf->getLastCommand();
-        cout << "offset: " << get<0>(result) << ", \tangle: " << get<1>(result) << ", \tR: " << get<2>(result) <<  ", \tcommand " << command<<endl;
+        // cout << "offset: " << get<0>(result) << ", \tangle: " << get<1>(result) << ", \tR: " << get<2>(result) <<  ", \tcommand " << command<<endl;
 
         if (command < -0.5)
 		{
@@ -75,64 +63,145 @@ void main_vivien()
             break;
 
         this_thread::sleep_for(chrono::milliseconds(100));
-        
 	}
-    cout << "stopping" << endl;
     dds.motorSpeed.write(127);
     lf->stop();
     t1.join();
-    cout << "ending" << endl;
+    delete lf;
 }
+
+void parkingModeMain()
+{
+	dds.steeringPosFromLeft.write(88);
+	sleep(2);
+	dds.motorSpeed.write(70);
+	usleep(3400000);
+	dds.motorSpeed.write(127);
+	sleep(2);
+	dds.steeringPosFromLeft.write(138);
+	sleep(2);
+	dds.motorSpeed.write(190);
+	usleep(3000000);
+	dds.motorSpeed.write(127);
+	sleep(2);
+	dds.steeringPosFromLeft.write(88);
+	sleep(2);
+	dds.motorSpeed.write(70);
+	usleep(4000000); //3.2
+	dds.motorSpeed.write(127);
+	sleep(2);			
+	dds.steeringPosFromLeft.write(112);
+	sleep(2);
+	dds.motorSpeed.write(70);
+	usleep(3200000);
+	dds.motorSpeed.write(127);
+}
+
+void obstacleModeMain()
+{
+	dds.motorSpeed.write(127); 
+}
+
+bool checkUS()
+{
+	return (dds.frontUS.left.read() < 50) 
+		|| (dds.frontUS.center.read() < 50) 
+		|| (dds.frontUS.center.read() < 50); 
+}
+
+enum State_t 
+{
+	Stop = 0, 
+	RoulerManuel = 1, 
+	RoulerAutonome = 2, 
+	Manoeuvre = 3
+}; 
 
 int main() 
 {
+	State_t etatCourant; 
+	bool signalStopModeAuto = false; 
 
-
-//	Can iface; 
-//	iface.startListening();
-//	while(1){
-//		Tests(iface);
-//	};	
-
-#ifdef ROLL
-	while(true) 
-#else 
-
-#ifdef PARK
-	while( dds.parkFinished.read() == 0 )
-	{
-		dds.parkOrder.write(1)	; 
-		dds.print(); 
-		sleep(1);
-	}
-#else 
-	int state = 0; 
 	while(true)
 	{
-		if(state == 0)
+		// Transitions 
+		switch(etatCourant) 
 		{
-			am.alert(AlertManager::obstacle);
-			am.alert(AlertManager::obstacle);
-			am.alert(AlertManager::obstacle);
-			am.alert(AlertManager::obstacle);
-			am.alert(AlertManager::obstacle);
-			state++; 
-		} 
-		else if (state == 1) 
-		{
-			am.alert(AlertManager::erreur); 
-			state++; 
-		} 
-		else if (state == 2)
-		{
-			am.alert(AlertManager::place_parking); 
-			state = 0; 
-		} 
-		dds.print();
-		sleep(1);
-	}
-#endif
+			case Stop: 
+				if(!checkUS())
+				{
+					etatCourant = RoulerManuel; 
+				}
+				break;
 
-#endif
-	return 0; 
+			case RoulerManuel: 
+				if(checkUS())
+				{
+					etatCourant = Stop; 
+				}
+				else if(ev.checkEvent("autonomous"))
+				{
+					etatCourant = RoulerAutonome; 
+				}
+				else if(ev.checkEvent("park"))
+				{
+					etatCourant = Manoeuvre; 
+				}
+				break;
+
+			case RoulerAutonome: 
+				if(checkUS())
+				{
+					etatCourant = Stop; 
+				}
+				else if(ev.checkEvent("manual"))
+				{
+					etatCourant = RoulerManuel; 
+				}
+				else if(ev.checkEvent("park"))
+				{
+					etatCourant = Manoeuvre; 
+				}
+				break;
+
+			case Manoeuvre: 
+				if(checkUS())
+				{
+					etatCourant = Stop; 
+				}
+				else
+				{
+					etatCourant = RoulerManuel; 
+				}
+				break;
+		}
+
+		std::cout << "Etat courant : " << etatCourant << std::endl;
+
+		// Execution des états
+		switch(etatCourant) 
+		{
+			case Stop: 
+				ev.stopTeleop(); 
+				dds.motorSpeed.write(127); 
+				dds.steeringPosFromLeft.write(112); 
+				break;
+
+			case RoulerManuel: 
+				ev.startTeleop(); 
+				break;
+
+			case RoulerAutonome: 
+				ev.stopTeleop(); 
+				autonomousModeMain(); 
+				break;
+
+			case Manoeuvre: 
+				ev.stopTeleop(); 
+				parkingModeMain(); 
+				break;
+		}
+	}
+
+	return 0;
 }

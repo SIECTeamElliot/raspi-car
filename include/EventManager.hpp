@@ -218,6 +218,17 @@ public:
     	}
 	}
 
+	bool checkEvent(std::string eventName)
+	{
+		bool val = false; 
+		auto it = eventStrMap.find(eventName);
+    	if( it != eventStrMap.end())
+    	{
+    		val = it->second->value;
+    	}
+    	return val;
+	}
+
 	void refreshEvents()
 	{
 		std::string prev(""); 
