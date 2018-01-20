@@ -122,7 +122,7 @@ private:
 
 	std::string readLastLine()
 	{
-		std::ifstream read(this->filename, std::ios_base::trunc | std::ios_base::ate );//open file
+		std::ifstream read(this->filename, std::ios_base::ate );//open file
 	    int length = 0; 
 
 	    char c = '\0';

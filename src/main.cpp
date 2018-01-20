@@ -144,10 +144,10 @@ int main()
 				{
 					etatCourant = Stop; 
 				}
-				else if(ev.checkEvent("autonomous"))
-				{
-					etatCourant = RoulerAutonome; 
-				}
+				// else if(ev.checkEvent("autonomous"))
+				// {
+				// 	etatCourant = RoulerAutonome; 
+				// }
 				else if(ev.checkEvent("park"))
 				{
 					etatCourant = Manoeuvre; 
@@ -159,10 +159,10 @@ int main()
 				{
 					etatCourant = Stop; 
 				}
-				else if(ev.checkEvent("manual"))
-				{
-					etatCourant = RoulerManuel; 
-				}
+				// else if(ev.checkEvent("manual"))
+				// {
+				// 	etatCourant = RoulerManuel; 
+				// }
 				else if(ev.checkEvent("park"))
 				{
 					etatCourant = Manoeuvre; 
