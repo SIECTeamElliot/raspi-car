@@ -148,7 +148,7 @@ int main()
 				// {
 				// 	etatCourant = RoulerAutonome; 
 				// }
-				else if(ev.checkEvent("park"))
+				else if(ev.checkEvent("yesPark"))
 				{
 					etatCourant = Manoeuvre; 
 				}
@@ -163,7 +163,7 @@ int main()
 				// {
 				// 	etatCourant = RoulerManuel; 
 				// }
-				else if(ev.checkEvent("park"))
+				else if(ev.checkEvent("yesPark"))
 				{
 					etatCourant = Manoeuvre; 
 				}
@@ -207,6 +207,7 @@ int main()
 		}
 
 		std::cout << "Etat courant : " << etatCourant << std::endl;
+		dds.print();
 		usleep(20000);
 	}
 
