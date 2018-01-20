@@ -48,10 +48,13 @@ void canListenCallback(uint32_t id, int nbBytes, char * bytes)
 			// 	assert(bytes[i] > Config::thresholds::frontUS::min);	
 			// }
 
-			dds.frontUS.left.update((bytes[1] << 8) + bytes[0]); 
-			dds.frontUS.center.update((bytes[3] << 8) + bytes[2]); 
-			dds.frontUS.right.update((bytes[5] << 8) + bytes[4]); 
+			//dds.frontUS.left.update((bytes[1] << 8) + bytes[0]); 
+			//dds.frontUS.center.update((bytes[3] << 8) + bytes[2]); 
+			//dds.frontUS.right.update((bytes[5] << 8) + bytes[4]); 
 
+			dds.frontUS.left.update((bytes[1] << 4) + bytes[0]); 
+			dds.frontUS.center.update((bytes[2] << 4) + bytes[1]); 
+			dds.frontUS.right.update((bytes[4] << 4) + bytes[3]); 
 			break; 
 
 		case Config::IDs::reception::rearUS:
@@ -102,7 +105,7 @@ void DDSCan::print()
 	std::cout << "leftMotorSpeed : " << leftMotorSpeed.read() << std::endl;
 	std::cout << "motorSpeed : " << motorSpeed.read() << std::endl;
 	
-	std::cout << std::hex; 
+	//std::cout << std::hex; 
 
 	std::cout << "frontUS.left : " << frontUS.left.read() << std::endl;
 	std::cout << "frontUS.center : " << frontUS.center.read() << std::endl;
@@ -111,7 +114,7 @@ void DDSCan::print()
 	std::cout << "rearUS.center : " << rearUS.center.read() << std::endl;
 	std::cout << "rearUS.right : " << rearUS.right.read() << std::endl;
 
-	std::cout << std::dec; 
+	//std::cout << std::dec; 
 	
 	std::cout << "wheelSensorLeft : " << wheelSensorLeft.read() << std::endl;
 	std::cout << "wheelSensorRight : " << wheelSensorRight.read() << std::endl;
