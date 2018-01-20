@@ -10,9 +10,9 @@ namespace Config
 	{
 		namespace motor_speed
 		{
-			static const uint8_t forwardMax = 254; 
+			static const uint8_t forwardMax = 190; 
 			static const uint8_t neutral = 127; 
-			static const uint8_t backwardMax = 0;
+			static const uint8_t backwardMax = 70;
 		}
 
 		namespace steering_pos
