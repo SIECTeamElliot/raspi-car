@@ -6,14 +6,6 @@
 #include <EventManager.hpp>
 #include <AlertManager.hpp>
 
-// void print(int nbBytes, unsigned char * bytes) 
-// {
-// 	for(int i = 0; i < nbBytes; i++) 
-// 	{
-// 		std::cout << bytes[i]; 
-// 	}
-// 	std::cout << std::endl;
-// }
 
 DDSCan dds;
 EventManager ev("../../communication_file.txt", dds); 
@@ -39,7 +31,7 @@ int main()
 			dds.steeringPosFromLeft.write(88);
 			sleep(2);
 			dds.motorSpeed.write(70);
-			usleep(3900000);
+			usleep(4000000); //3.2
 			dds.motorSpeed.write(127);
 			sleep(2);			
 
@@ -52,12 +44,26 @@ int main()
 	{
 		dds.motorSpeed.write(180);
 
- 		if(dds.frontUS.left.read() < 40 || dds.frontUS.right.read() < 40 || dds.frontUS.center.read() < 40)
+ 		if(dds.frontUS.left.read() < 40)
 		{
 			dds.motorSpeed.write(127);
 			dds.steeringPosFromLeft.write(112);
 			dds.print();
 			sleep(1);
+		}
+		else if(dds.frontUS.right.read() < 40)
+		{
+			dds.motorSpeed.write(127);
+			dds.steeringPosFromLeft.write(112);
+			dds.print();
+			sleep(1);
+		}
+		else if (dds.frontUS.center.read() < 40)
+		{
+			dds.motorSpeed.write(127);
+			dds.steeringPosFromLeft.write(112);
+			dds.print();
+			sleep(1);		
 		}
 
 	}
