@@ -1,4 +1,6 @@
 
+
+
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <opencv2/opencv.hpp>
@@ -13,7 +15,7 @@
 using namespace cv;
 using namespace std;
 #define ISRASPBERRY 0
-#define DOWN_SECTION 1.0
+#define DOWN_SECTION 0.4
 #define DISPLAY_ON	0
 
 
@@ -65,11 +67,12 @@ void LineFinder::_run() {
 		cout << "Already running" << endl;
 		return;
 	}
+	long currtime;
 	running = true;
 	while (running)
 	{
 		camera.read(srcI);
-
+		currtime = time(0);
 		// image subsizing
 		trimI = srcI(subSize);
 
@@ -81,6 +84,7 @@ void LineFinder::_run() {
 
 		// threshold for a color
 		inRange(csvI, cv::Scalar(0, 0, 150), cv::Scalar(255, 63, 255), threshI);
+		//inRange(csvI, cv::Scalar(128, 63, 63), cv::Scalar(255, 255, 255), threshI);
 
 		//decrease the contrast to avoid saturation
 		threshI.convertTo(threshI, -1, 1.0 / 255.0, 0);
@@ -108,19 +112,14 @@ void LineFinder::_run() {
 		}
 
 		// linear regression and points calculation
-		tuple <double, double, double> coefs = linReg(maximums, width, height);
+		tuple <double, double, double> coefs = linReg(maximums, width, heightCropped);
 		Point pt1((int)get<1>(coefs), 0);
 		int origin = int(nRows* get<0>(coefs) + get<1>(coefs));
 		Point pt2(origin, nRows);
 		double angle = atan(get<0>(coefs));
 		double correlCoef = get<2>(coefs);
 
-		// display line
-		//cout << "coefs : " << coefs.first << ", " << coefs.second << endl;
-		//line(bluredI, pt1, pt2, Scalar(255, 0, 0));
-		Point offset(0, int((1.0 - DOWN_SECTION) * height));
-		line(srcI, pt1 + offset, pt2 + offset, Scalar(255, 0, 0), 2);
-
+		
 		// display text
 		double origin_d = 2.0 * (double(origin) - double(width) / 2) / double(width);
 		double angle_d = -180.0 * angle / 3.14159;
@@ -135,6 +134,11 @@ void LineFinder::_run() {
 			direction--;
 
 #if (DISPLAY_ON == 1)
+
+		// display line
+		Point offset(0, int((1.0 - DOWN_SECTION) * height));
+		line(srcI, pt1 + offset, pt2 + offset, Scalar(255, 0, 0), 2);
+
 		Point textOrigin(10, 20);
 		if (direction == 0) {
 			putText(srcI, "Forward", textOrigin, CV_FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255, 0, 0));
@@ -155,18 +159,20 @@ void LineFinder::_run() {
 		waitKey(1);
 
 #endif // (DISPLAY_ON == 1)
+        double command_offset = origin_d * 2;
+		if (command_offset <-2) command_offset = -2;
+		if (command_offset > 2) command_offset = 2;
+		int command_angle = angle_d / 30.0; 
+		if (command_angle <-2) command_angle = -2;
+		if (command_angle > 2) command_angle = 2;
+		double command = command_angle + command_offset;
+		if (command <-1) command = -1;
+		if (command > 1) command = 1;
 
-		//double command = angle_d / 45.0;
-		//if (command <-1) command = -1;
-		//if (command >1) command = 1;
-		//command += origin_d;
-		//if (command <-1) command = -1;
-		//if (command >1) command = 1;
-		double command = 0;
-		if (angle_d < -20.0)	command--;
-		if (angle_d > 20.0)		command++;
-		if (origin_d < -0.3)	command--;
-		if (origin_d > 0.3)		command++;
+		//if (angle_d < -20.0)	command--;
+		//if (angle_d > 20.0)		command++;
+		//if (origin_d < -0.3)	command--;
+		//if (origin_d > 0.3)		command++;
 
 
 
@@ -176,7 +182,7 @@ void LineFinder::_run() {
 		if (correlCoef > 0.5) lastCommand = command;
 		mut_lastResult.unlock();
 
-
+		cout << "time :" << (time(0) - currtime)*1000 << endl;
 		/*if (waitKey(1) == 27)
 		break;*/
 	}
