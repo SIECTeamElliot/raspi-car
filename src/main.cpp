@@ -192,13 +192,7 @@ int main()
 				break;
 		}
 
-		count++; 
-		if(count > 10000) 
-		{
-			count = 0;
-			std::cout << "Etat courant : " << etatCourant << std::endl;
-			dds.print();
-		}
+		usleep(1000); 
 	}
 
 	return 0;
