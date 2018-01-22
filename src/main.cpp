@@ -41,23 +41,6 @@ void autonomousModeMain()
         double command = lf->getLastCommand();
         // cout << "offset: " << get<0>(result) << ", \tangle: " << get<1>(result) << ", \tR: " << get<2>(result) <<  ", \tcommand " << command<<endl;
 
-        if (command < -0.5)
-		{
-			//dds.steeringPosFromLeft.write(138);
-			dds.steeringPosFromLeft.write(128);
-			dds.print();
-		}
-		else if (command > 0.5) 
-		{
-			dds.steeringPosFromLeft.write(98);
-			//dds.steeringPosFromLeft.write(88);
-			dds.print();
-		}
-		else 
-		{
-			dds.steeringPosFromLeft.write(112);
-			dds.print();
-		}
         command = command * (-25.) + 113.;
         if (command > 138) command = 138;
         if (command < 88) command = 88;

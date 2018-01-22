@@ -77,14 +77,15 @@ void LineFinder::_run() {
 		trimI = srcI(subSize);
 
 		// gaussian blur to smooth out noise
-		GaussianBlur(trimI, bluredI, Size(9, 9), 0, 0);
+		//GaussianBlur(trimI, bluredI, Size(9, 9), 0, 0);
+		bluredI = trimI;
 
 		// convert to HSV color space
 		cvtColor(bluredI, csvI, CV_BGR2HSV);
 
 		// threshold for a color
-		inRange(csvI, cv::Scalar(0, 0, 150), cv::Scalar(255, 63, 255), threshI);
-		//inRange(csvI, cv::Scalar(128, 63, 63), cv::Scalar(255, 255, 255), threshI);
+		//inRange(csvI, cv::Scalar(0, 0, 150), cv::Scalar(255, 63, 255), threshI);
+		inRange(csvI, cv::Scalar(128, 63, 63), cv::Scalar(255, 255, 255), threshI);
 
 		//decrease the contrast to avoid saturation
 		threshI.convertTo(threshI, -1, 1.0 / 255.0, 0);
