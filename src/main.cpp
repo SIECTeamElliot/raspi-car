@@ -13,7 +13,7 @@ AlertManager am("../../lecture.txt", 1000);
 
 
 int main() 
-{/*
+{
 			dds.steeringPosFromLeft.write(88);
 			sleep(2);
 			dds.motorSpeed.write(70);
@@ -39,7 +39,7 @@ int main()
 			sleep(2);
 			dds.motorSpeed.write(70);
 			usleep(3200000);
-			dds.motorSpeed.write(127);*/
+			dds.motorSpeed.write(127);/*
 	while(true) 
 	{
  		if((dds.frontUS.left.read() < 40)  || (dds.frontUS.right.read() < 40) || (dds.frontUS.center.read() < 50))
@@ -52,5 +52,5 @@ int main()
 		{
 			dds.motorSpeed.write(180);
 		}
-	}
+	}*/
 }
