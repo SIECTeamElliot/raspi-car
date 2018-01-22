@@ -41,6 +41,7 @@ private:
 
 public: 
 	Event(std::string eventName, DDSCallback * cb = nullptr) : 
+		value(false), 
 		eventName(eventName), 
 		callback(nullptr)
 	{

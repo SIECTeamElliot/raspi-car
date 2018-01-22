@@ -129,6 +129,8 @@ int main()
 
 	int count = 0; 
 
+	autonomousModeMain(); 
+
 	while(true)
 	{
 		// Transitions 
@@ -156,20 +158,20 @@ int main()
 				}
 				break;
 
-			case RoulerAutonome: 
-				if(checkUS())
-				{
-					etatCourant = Stop; 
-				}
-				// else if(ev.checkEvent("manual"))
-				// {
-				// 	etatCourant = RoulerManuel; 
-				// }
-				else if(ev.checkEvent("yesPark"))
-				{
-					etatCourant = Manoeuvre; 
-				}
-				break;
+			// case RoulerAutonome: 
+			// 	if(checkUS())
+			// 	{
+			// 		etatCourant = Stop; 
+			// 	}
+			// 	else if(ev.checkEvent("manual"))
+			// 	{
+			// 		etatCourant = RoulerManuel; 
+			// 	}
+			// 	else if(ev.checkEvent("yesPark"))
+			// 	{
+			// 		etatCourant = Manoeuvre; 
+			// 	}
+			// 	break;
 
 			case Manoeuvre: 
 				if(checkUS())
@@ -199,7 +201,6 @@ int main()
 
 			case RoulerAutonome: 
 				ev.stopTeleop(); 
-				// autonomousModeMain(); 
 				break;
 
 			case Manoeuvre: 
@@ -209,7 +210,7 @@ int main()
 		}
 
 		count++; 
-		if(count > 100000) 
+		if(count > 10000) 
 		{
 			count = 0;
 			std::cout << "Etat courant : " << etatCourant << std::endl;
